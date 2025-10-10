@@ -1,4 +1,4 @@
-# README.md for Django + Tailwind LMS Project
+x# README.md for Django + Tailwind LMS Project
 
 # 🎓 Django + Tailwind LMS Project
 
@@ -8,11 +8,11 @@ This is a **Django-based Learning Management System (LMS)** project styled with 
 
 ## 🚀 Features
 
-* Django backend (Python 3)
-* Tailwind CSS integrated via `django-tailwind`
-* Custom templates and static files
-* Fully responsive UI
-* Ready for deployment
+-   Django backend (Python 3)
+-   Tailwind CSS integrated via `django-tailwind`
+-   Custom templates and static files
+-   Fully responsive UI
+-   Ready for deployment
 
 ---
 
@@ -20,10 +20,10 @@ This is a **Django-based Learning Management System (LMS)** project styled with 
 
 Before running the project, make sure you have:
 
-* **Python 3.8+**
-* **pip** (Python package manager)
-* **Node.js + npm** (for Tailwind)
-* **Git**
+-   **Python 3.8+**
+-   **pip** (Python package manager)
+-   **Node.js + npm** (for Tailwind)
+-   **Git**
 
 ---
 
@@ -82,13 +82,13 @@ CommandError: It looks like node.js and/or npm is not installed...
 
 Then find your npm path:
 
-* **Windows:**
+-   **Windows:**
 
 ```bash
 where npm
 ```
 
-* **macOS/Linux:**
+-   **macOS/Linux:**
 
 ```bash
 which npm
@@ -100,6 +100,14 @@ Then add the following in your `settings.py` (adjust the path accordingly):
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"  # Windows example
 # or
 NPM_BIN_PATH = "/usr/local/bin/npm"  # macOS/Linux example
+```
+
+---
+
+### 5️⃣ Install Tailwind
+
+```bash
+pip install django-tailwind
 ```
 
 ---
