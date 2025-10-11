@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+        
+        <!-- Top Nav/Header for Mobile (Important for responsiveness) -->
+        <header class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10">
+             <button class="text-gray-600 hover:text-blue-700">
+                <!-- Menu Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+             </button>
+             <span class="text-lg font-semibold text-gray-900">Library Admin</span>
+             <button class="text-gray-600 hover:text-blue-700">
+                <!-- User Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+             </button>
+        </header>
+        
+        <!-- Main Content Padding -->
+        <main class="p-4 md:p-8">
+
+            <h1 class="text-3xl font-bold text-gray-900 mb-1">Issue & Return Books</h1>
+            <p class="text-gray-500 mb-8">Manage book issues and returns</p>
+
+            <!-- Card Container for Tabs and Forms -->
+            <div class="max-w-4xl mx-auto">
+                <!-- Tab Controls (Issue Book / Return Book) -->
+                <div class="flex bg-white rounded-t-xl shadow-lg p-2 border border-gray-100">
+                    <button id="issue-tab" onclick="switchTab('issue')" 
+                            class="flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 
+                                   bg-blue-600 text-white shadow-md hover:bg-blue-700">
+                        Issue Book
+                    </button>
+                    <button id="return-tab" onclick="switchTab('return')" 
+                            class="flex-1 text-center py-2 px-4 rounded-lg font-semibold transition duration-200 
+                                   text-gray-600 hover:bg-gray-100">
+                        Return Book
+                    </button>
+                </div>
+
+                <!-- Form Content Area -->
+                <div class="bg-white p-6 md:p-10 rounded-b-xl shadow-2xl border border-t-0 border-gray-100">
+                    
+                    <!-- ---------------------------------------------------- -->
+                    <!-- 1. ISSUE BOOK FORM (Initially Active) -->
+                    <!-- ---------------------------------------------------- -->
+                    <div id="issue-form" class="active-form">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-3">Issue Book to Student</h2>
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- Student ID / Name -->
+                            <div class="mb-6">
+                                <label for="issue_student_id" class="block text-sm font-medium text-gray-700 mb-2">Student ID / Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="issue_student_id" name="student_id" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                    placeholder="Enter student ID or name"
+                                >
+                            </div>
+
+                            <!-- Book ISBN / Title -->
+                            <div class="mb-6">
+                                <label for="issue_book_isbn" class="block text-sm font-medium text-gray-700 mb-2">Book ISBN / Title <span class="text-red-500">*</span></label>
+                                <input type="text" id="issue_book_isbn" name="book_isbn" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                    placeholder="Enter book ISBN or title"
+                                >
+                            </div>
+
+                            <!-- Issue Date and Loan Period -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <div>
+                                    <label for="issue_date" class="block text-sm font-medium text-gray-700 mb-2">Issue Date <span class="text-red-500">*</span></label>
+                                    <input type="date" id="issue_date" name="issue_date" required
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                    >
+                                </div>
+                                <div>
+                                    <label for="loan_period" class="block text-sm font-medium text-gray-700 mb-2">Loan Period (Days) <span class="text-red-500">*</span></label>
+                                    <input type="number" id="loan_period" name="loan_period" required min="1" value="14"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                        placeholder="e.g., 14"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-150">
+                                Issue Book
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ---------------------------------------------------- -->
+                    <!-- 2. RETURN BOOK FORM (Initially Hidden) -->
+                    <!-- ---------------------------------------------------- -->
+                    <div id="return-form" class="hidden-form hidden">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-3">Return Book</h2>
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- Book ISBN / Title -->
+                            <div class="mb-6">
+                                <label for="return_book_isbn" class="block text-sm font-medium text-gray-700 mb-2">Book ISBN / Title <span class="text-red-500">*</span></label>
+                                <input type="text" id="return_book_isbn" name="book_isbn" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                    placeholder="Enter book ISBN or title"
+                                >
+                            </div>
+
+                            <!-- Student ID / Name -->
+                            <div class="mb-6">
+                                <label for="return_student_id" class="block text-sm font-medium text-gray-700 mb-2">Student ID / Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="return_student_id" name="student_id" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                    placeholder="Enter student ID or name"
+                                >
+                            </div>
+
+                            <!-- Return Date -->
+                            <div class="mb-6">
+                                <label for="return_date" class="block text-sm font-medium text-gray-700 mb-2">Return Date <span class="text-red-500">*</span></label>
+                                <input type="date" id="return_date" name="return_date" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                >
+                            </div>
+
+                            <!-- Book Condition -->
+                            <div class="mb-8">
+                                <label for="book_condition" class="block text-sm font-medium text-gray-700 mb-2">Book Condition <span class="text-red-500">*</span></label>
+                                <select id="book_condition" name="book_condition" required
+                                    class="w-full px-4 py-3 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 shadow-sm"
+                                >
+                                    <option value="">Select condition</option>
+                                    <option value="excellent">Excellent</option>
+                                    <option value="good">Good</option>
+                                    <option value="fair">Fair</option>
+                                    <option value="damaged">Damaged (Fine applicable)</option>
+                                </select>
+                            </div>
+
+                            <!-- Fine Information Box -->
+                            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-8 text-sm">
+                                Fine will be calculated automatically based on the due date and return date.
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-150">
+                                Process Return
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JavaScript for Tab Switching -->
+    <script>
+        function switchTab(tabName) {
+            const issueForm = document.getElementById('issue-form');
+            const returnForm = document.getElementById('return-form');
+            const issueTab = document.getElementById('issue-tab');
+            const returnTab = document.getElementById('return-tab');
+
+            if (tabName === 'issue') {
+                // Show Issue Form
+                issueForm.classList.remove('hidden');
+                returnForm.classList.add('hidden');
+                
+                // Style Tabs
+                issueTab.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                issueTab.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'hover:bg-blue-700');
+                
+                returnTab.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'hover:bg-blue-700');
+                returnTab.classList.add('text-gray-600', 'hover:bg-gray-100');
+            } else if (tabName === 'return') {
+                // Show Return Form
+                issueForm.classList.add('hidden');
+                returnForm.classList.remove('hidden');
+                
+                // Style Tabs
+                returnTab.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                returnTab.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'hover:bg-blue-700');
+                
+                issueTab.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'hover:bg-blue-700');
+                issueTab.classList.add('text-gray-600', 'hover:bg-gray-100');
+            }
+        }
+
+        // Initialize the Issue tab as active when the page loads
+        window.onload = function() {
+            switchTab('issue');
+        };
+    </script>
+
+{% endblock %}
