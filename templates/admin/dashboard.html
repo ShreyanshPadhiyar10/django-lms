@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll">
+    <!-- Top Nav/Header for Mobile (not shown in image, but good for responsiveness) -->
+    <header
+        class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10"
+    >
+        <button class="text-gray-600 hover:text-primary">
+            <!-- Menu Icon -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <line x1="3" x2="21" y1="12" y2="12" />
+                <line x1="3" x2="21" y1="6" y2="6" />
+                <line x1="3" x2="21" y1="18" y2="18" />
+            </svg>
+        </button>
+        <span class="text-lg font-semibold text-gray-900">Library Admin</span>
+        <button class="text-gray-600 hover:text-primary">
+            <!-- User Icon -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- Main Content Padding -->
+    <main class="p-4 md:p-8">
+        <!-- Header -->
+        <h1 class="text-3xl font-bold text-gray-900 mb-1">Admin Dashboard</h1>
+        <p class="text-gray-500 mb-8">Welcome back, Administrator</p>
+
+        <!-- 3. Stat Cards Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Stat Card Macro -->
+            <!-- Card 1: Total Books -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between"
+            >
+                <div class="flex justify-between items-start mb-4">
+                    <h2
+                        class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                        Total Books
+                    </h2>
+                    <!-- Book icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-gray-400"
+                    >
+                        <path
+                            d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V5H6.5A2.5 2.5 0 0 0 4 7.5v12Z"
+                        />
+                    </svg>
+                </div>
+                <p class="text-4xl font-extrabold text-gray-900">1,234</p>
+                <p class="text-sm text-gray-500 mt-1">Active in library</p>
+            </div>
+
+            <!-- Card 2: Active Users -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between"
+            >
+                <div class="flex justify-between items-start mb-4">
+                    <h2
+                        class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                        Active Users
+                    </h2>
+                    <!-- User icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-gray-400"
+                    >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
+                <p class="text-4xl font-extrabold text-gray-900">456</p>
+                <p class="text-sm text-gray-500 mt-1">Registered students</p>
+            </div>
+
+            <!-- Card 3: Pending Requests -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between"
+            >
+                <div class="flex justify-between items-start mb-4">
+                    <h2
+                        class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                        Pending Requests
+                    </h2>
+                    <!-- List icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-gray-400"
+                    >
+                        <line x1="8" x2="21" y1="6" y2="6" />
+                        <line x1="8" x2="21" y1="12" y2="12" />
+                        <line x1="8" x2="21" y1="18" y2="18" />
+                        <line x1="3" x2="3.01" y1="6" y2="6" />
+                        <line x1="3" x2="3.01" y1="12" y2="12" />
+                        <line x1="3" x2="3.01" y1="18" y2="18" />
+                    </svg>
+                </div>
+                <p class="text-4xl font-extrabold text-gray-900">3</p>
+                <p class="text-sm text-gray-500 mt-1">Awaiting approval</p>
+            </div>
+
+            <!-- Card 4: Total Fines -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between"
+            >
+                <div class="flex justify-between items-start mb-4">
+                    <h2
+                        class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                        Total Fines
+                    </h2>
+                    <!-- Dollar/Coin icon -->
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-gray-400"
+                    >
+                        <line x1="12" x2="12" y1="2" y2="22" />
+                        <path
+                            d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                        />
+                    </svg>
+                </div>
+                <p class="text-4xl font-extrabold text-gray-900">$2,450</p>
+                <p class="text-sm text-gray-500 mt-1">Outstanding payments</p>
+            </div>
+        </div>
+
+        <!-- 4. Bottom Section (Pending Requests & Quick Actions) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Pending Requests List (Takes 2/3 width on large screens) -->
+            <div class="lg:col-span-2">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">
+                    Pending Requests
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Request Card Macro -->
+
+                    <!-- Request 1: Alice Johnson -->
+                    <div
+                        class="bg-white p-5 rounded-xl shadow-md border border-gray-100"
+                    >
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-3">
+                                <!-- Initials Circle -->
+                                <div
+                                    class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-primary font-semibold text-sm"
+                                >
+                                    AJ
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-base font-semibold text-gray-900"
+                                    >
+                                        Alice Johnson
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        2025-01-16
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Status Tag -->
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full"
+                            >
+                                Pending
+                            </span>
+                        </div>
+                        <div class="pl-14 mb-4">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Book:
+                                <span class="font-normal text-gray-600"
+                                    >The Great Gatsby</span
+                                >
+                            </p>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                            >
+                                Reject
+                            </button>
+                            <button
+                                class="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                            >
+                                Approve
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Request 2: Bob Smith -->
+                    <div
+                        class="bg-white p-5 rounded-xl shadow-md border border-gray-100"
+                    >
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-3">
+                                <!-- Initials Circle -->
+                                <div
+                                    class="w-10 h-10 flex items-center justify-center rounded-full bg-green-100 text-green-700 font-semibold text-sm"
+                                >
+                                    BS
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-base font-semibold text-gray-900"
+                                    >
+                                        Bob Smith
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        2025-01-14
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Status Tag -->
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full"
+                            >
+                                Pending
+                            </span>
+                        </div>
+                        <div class="pl-14 mb-4">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Book:
+                                <span class="font-normal text-gray-600"
+                                    >To Kill a Mockingbird</span
+                                >
+                            </p>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                            >
+                                Reject
+                            </button>
+                            <button
+                                class="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                            >
+                                Approve
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Request 3: Carol White -->
+                    <div
+                        class="bg-white p-5 rounded-xl shadow-md border border-gray-100"
+                    >
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-3">
+                                <!-- Initials Circle -->
+                                <div
+                                    class="w-10 h-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-700 font-semibold text-sm"
+                                >
+                                    CW
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-base font-semibold text-gray-900"
+                                    >
+                                        Carol White
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        2025-01-13
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Status Tag -->
+                            <span
+                                class="inline-flex items-center px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full"
+                            >
+                                Pending
+                            </span>
+                        </div>
+                        <div class="pl-14 mb-4">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Book:
+                                <span class="font-normal text-gray-600"
+                                    >1984</span
+                                >
+                            </p>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                            >
+                                Reject
+                            </button>
+                            <button
+                                class="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                            >
+                                Approve
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Actions (Takes 1/3 width on large screens) -->
+            <div class="lg:col-span-1">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">
+                    Quick Actions
+                </h2>
+
+                <div
+                    class="bg-white p-5 rounded-xl shadow-lg border border-gray-100 space-y-3"
+                >
+                    <!-- Action Button Macro -->
+                    <button
+                        class="w-full flex items-center space-x-3 px-4 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg"
+                    >
+                        <!-- Add Book Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
+                        </svg>
+                        <span>Add New Book</span>
+                    </button>
+
+                    <button
+                        class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        <!-- Issue/Return Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+                        </svg>
+                        <span>Issue / Return Book</span>
+                    </button>
+
+                    <button
+                        class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        <!-- Manage Users Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                            />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        <span>Manage Users</span>
+                    </button>
+
+                    <button
+                        class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        <!-- View Requests Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M17 12V3H7v9M10 17l2 2 4-4" />
+                        </svg>
+                        <span>View All Requests</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+

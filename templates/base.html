@@ -1,4 +1,49 @@
-{% block abc %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Admin{% endblock title %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom config for Inter font and theme colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1d4ed8', // A nice dark blue for accents
+                        'admin-bg': '#f3f4f6',
+                        'sidebar-bg': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body, #app-container {
+            height: 100%;
+            overflow: hidden; /* Prevent body scroll, main content handles scroll */
+        }
+        .main-content-scroll {
+            overflow-y: auto;
+            height: 100vh; /* Full viewport height for scrolling area */
+        }
+    </style>
+    {% block head_extra %}{% endblock head_extra %}
+</head>
+<body class="font-sans antialiased bg-admin-bg">
 
-{% include "header.html" %}
-{% endblock %}
+    <div id="app-container" class="flex">
+
+        {% include 'includes/header.html' %}
+        
+        {% block content %}{% endblock content %}
+
+    </div>
+
+</body>
+</html>

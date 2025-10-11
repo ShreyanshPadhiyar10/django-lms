@@ -1,0 +1,212 @@
+<!-- Main Application Container -->
+<div id="app-container" class="flex">
+    <!-- 1. Sidebar -->
+    <div
+        class="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 shadow-xl fixed left-0 top-0 h-full z-10"
+    >
+        <!-- Logo/Title -->
+        <div
+            class="p-6 flex items-center justify-between border-b border-gray-100"
+        >
+            <span class="text-xl font-semibold text-gray-900"
+                >Library Admin</span
+            >
+            <!-- Logo placeholder -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-primary"
+            >
+                <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                />
+            </svg>
+        </div>
+
+        <!-- Menu Navigation -->
+        <nav class="flex-grow p-4 space-y-2">
+            <h3 class="text-xs font-medium uppercase text-gray-500 mb-2 px-2">
+                Menu
+            </h3>
+
+            <!-- Nav Item Macro -->
+            <!-- Active Item -->
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-primary font-semibold transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <!-- Inactive Items -->
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path
+                        d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V5H6.5A2.5 2.5 0 0 0 4 7.5v12Z"
+                    />
+                </svg>
+                <span>Books</span>
+            </a>
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                </svg>
+                <span>Add Book</span>
+            </a>
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+                </svg>
+                <span>Issue/Return</span>
+            </a>
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M17 12V3H7v9M10 17l2 2 4-4" />
+                </svg>
+                <span>Requests</span>
+            </a>
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Users</span>
+            </a>
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 0-2 0l-.15-.08a2 2 0 0 0-2.73 2.73l.08.15a2 2 0 0 0 0 2l-.25.43a2 2 0 0 1-1.73 1v.44a2 2 0 0 1-2 2v.18a2 2 0 0 0-1 1.73l.25.43a2 2 0 0 0 0 2l-.15.08a2 2 0 0 0 2.73 2.73l.08-.15a2 2 0 0 0 2 0l.43.25a2 2 0 0 1 1.73 1v.18a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 0 2 0l.15.08a2 2 0 0 0 2.73-2.73l-.08-.15a2 2 0 0 0 0-2l.25-.43a2 2 0 0 1 1.73-1v-.44a2 2 0 0 1 2-2v-.18a2 2 0 0 0 1-1.73l-.25-.43a2 2 0 0 0 0-2l.15-.08a2 2 0 0 0-2.73-2.73l-.08.15a2 2 0 0 0-2 0l-.43-.25a2 2 0 0 1-1.73-1V4a2 2 0 0 0-2-2z"
+                    />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- Logout Button -->
+        <div class="p-6 border-t border-gray-100">
+            <a
+                href="#"
+                class="flex items-center space-x-3 p-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition duration-150"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
