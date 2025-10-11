@@ -23,4 +23,9 @@ urlpatterns = [
     path('', views.home),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('books/', views.books, name='books'),
+    path('add_book/', views.add_book, name='add_book'),
+    path('issue_return/', views.issue_return, name='issue_return'),
+    path('users/', views.users, name='users'),
+    path('requests/', views.requests, name='requests'),
+    path('settings/', views.settings, name='settings'),
 ]

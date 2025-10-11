@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
+    <!-- Top Nav/Header for Mobile (Important for responsiveness) -->
+    <header
+        class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10"
+    >
+        <button class="text-gray-600 hover:text-blue-700">
+            <!-- Menu Icon -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <line x1="3" x2="21" y1="12" y2="12" />
+                <line x1="3" x2="21" y1="6" y2="6" />
+                <line x1="3" x2="21" y1="18" y2="18" />
+            </svg>
+        </button>
+        <span class="text-lg font-semibold text-gray-900">Library Admin</span>
+        <button class="text-gray-600 hover:text-blue-700">
+            <!-- User Icon -->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- Main Content Padding -->
+    <main class="p-4 md:p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-1">Book Requests</h1>
+        <p class="text-gray-500 mb-8">Manage student book requests</p>
+
+        <!-- Tab Controls (Pending / Approved / Rejected) -->
+        <div class="flex flex-wrap gap-4 mb-8">
+            <!-- Tab 1: Pending -->
+            <button
+                id="pending-tab"
+                onclick="switchTab('pending')"
+                class="px-4 py-2 rounded-xl font-semibold transition duration-200 bg-blue-600 text-white shadow-md hover:bg-blue-700"
+            >
+                Pending (3)
+            </button>
+            <!-- Tab 2: Approved -->
+            <button
+                id="approved-tab"
+                onclick="switchTab('approved')"
+                class="px-4 py-2 rounded-xl font-semibold transition duration-200 text-gray-600 hover:bg-gray-100"
+            >
+                Approved (2)
+            </button>
+            <!-- Tab 3: Rejected -->
+            <button
+                id="rejected-tab"
+                onclick="switchTab('rejected')"
+                class="px-4 py-2 rounded-xl font-semibold transition duration-200 text-gray-600 hover:bg-gray-100"
+            >
+                Rejected (1)
+            </button>
+        </div>
+
+        <!-- Request List Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- ---------------------------------------------------- -->
+            <!-- 1. PENDING REQUESTS (Initially Active) -->
+            <!-- ---------------------------------------------------- -->
+            <div
+                id="pending-list"
+                class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 active-list"
+            >
+                <!-- Pending Request Card 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                AJ
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    Alice Johnson
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-15</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full"
+                            >Pending</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800"
+                            >The Great Gatsby</span
+                        >
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg shadow-sm transition duration-150"
+                        >
+                            Reject
+                        </button>
+                        <button
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-150"
+                        >
+                            Approve
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pending Request Card 2 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                BS
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    Bob Smith
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-14</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full"
+                            >Pending</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800"
+                            >To Kill a Mockingbird</span
+                        >
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg shadow-sm transition duration-150"
+                        >
+                            Reject
+                        </button>
+                        <button
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-150"
+                        >
+                            Approve
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pending Request Card 3 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                CW
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    Carol White
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-13</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full"
+                            >Pending</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800">1984</span>
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg shadow-sm transition duration-150"
+                        >
+                            Reject
+                        </button>
+                        <button
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-150"
+                        >
+                            Approve
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- 2. APPROVED REQUESTS (Initially Hidden) -->
+            <!-- ---------------------------------------------------- -->
+            <div
+                id="approved-list"
+                class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"
+            >
+                <!-- Approved Request Card 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                JD
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    John Doe
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-10</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full"
+                            >Approved</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800">Dune</span>
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg cursor-not-allowed"
+                        >
+                            Issued
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Approved Request Card 2 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-pink-100 text-pink-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                ES
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    Emily Stone
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-08</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full"
+                            >Approved</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800"
+                            >Where the Crawdads Sing</span
+                        >
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg cursor-not-allowed"
+                        >
+                            Issued
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- 3. REJECTED REQUESTS (Initially Hidden) -->
+            <!-- ---------------------------------------------------- -->
+            <div
+                id="rejected-list"
+                class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"
+            >
+                <!-- Rejected Request Card 1 -->
+                <div
+                    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div
+                                class="w-10 h-10 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm"
+                            >
+                                MZ
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    Mike Zero
+                                </p>
+                                <p class="text-xs text-gray-500">2025-01-05</p>
+                            </div>
+                        </div>
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-full"
+                            >Rejected</span
+                        >
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">
+                        Book:
+                        <span class="font-medium text-gray-800"
+                            >The Martian</span
+                        >
+                    </p>
+                    <div class="flex space-x-3">
+                        <button
+                            class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg cursor-not-allowed"
+                        >
+                            Rejected
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- JavaScript for Tab Switching -->
+<script>
+    function switchTab(tabName) {
+        const lists = {
+            pending: document.getElementById("pending-list"),
+            approved: document.getElementById("approved-list"),
+            rejected: document.getElementById("rejected-list"),
+        };
+        const tabs = {
+            pending: document.getElementById("pending-tab"),
+            approved: document.getElementById("approved-tab"),
+            rejected: document.getElementById("rejected-tab"),
+        };
+
+        // Loop through all lists and tabs
+        for (const key in lists) {
+            if (key === tabName) {
+                // Activate the selected tab and list
+                lists[key].classList.remove("hidden");
+                tabs[key].classList.remove(
+                    "text-gray-600",
+                    "hover:bg-gray-100"
+                );
+                tabs[key].classList.add(
+                    "bg-blue-600",
+                    "text-white",
+                    "shadow-md",
+                    "hover:bg-blue-700"
+                );
+            } else {
+                // Deactivate others
+                lists[key].classList.add("hidden");
+                tabs[key].classList.remove(
+                    "bg-blue-600",
+                    "text-white",
+                    "shadow-md",
+                    "hover:bg-blue-700"
+                );
+                tabs[key].classList.add("text-gray-600", "hover:bg-gray-100");
+            }
+        }
+    }
+
+    // Initialize the Pending tab as active when the page loads
+    window.onload = function () {
+        // Check if a list is present before switching (prevents errors on base page)
+        if (document.getElementById("pending-list")) {
+            switchTab("pending");
+        }
+    };
+</script>
+
+{% endblock %}
