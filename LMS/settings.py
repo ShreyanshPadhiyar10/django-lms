@@ -133,3 +133,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR, "static"
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': 'D:/DCS/Project/LMS/django_cache',  # For Windows. Use a simple path.
+        # OR for Mac/Linux: '/var/tmp/django_cache',
+    }
+}

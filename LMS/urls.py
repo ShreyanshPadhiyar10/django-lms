@@ -28,6 +28,7 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('requests/', views.requests, name='requests'),
     path('settings/', views.settings, name='settings'),
+    path('api/filter-books/', views.filter_books, name='filter_books'),
 
     path('user/dashboard/', views.userDashboard, name='userDashboard'),
     path('user/books', views.myBooks, name='myBooks'),
