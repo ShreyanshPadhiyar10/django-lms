@@ -1,0 +1,355 @@
+{% include "index.html" %} 
+
+{% block content %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
+        <ol class="list-none p-0 inline-flex">
+            <li class="flex items-center">
+                <a
+                    href="#"
+                    class="text-blue-600 hover:text-blue-800 transition duration-150"
+                    >Home</a
+                >
+                <svg
+                    class="fill-current w-3 h-3 mx-2 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                >
+                    <path
+                        d="M7.293 14.707l3.293-3.293-3.293-3.293a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414z"
+                    />
+                </svg>
+            </li>
+            <li class="text-gray-700 font-medium">Fiction</li>
+        </ol>
+    </nav>
+
+    <!-- Category Header -->
+    <header class="mb-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Fiction</h1>
+        <p class="text-xl text-gray-600">Explore 4 books in this category</p>
+    </header>
+
+    <!-- Subcategory Tabs -->
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Subcategories</h2>
+    <div class="flex flex-wrap gap-3 mb-8">
+        <button
+            id="tab-all"
+            onclick="filterSubcategory('all')"
+            class="subcategory-tab py-2 px-4 text-sm font-semibold rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition duration-200"
+        >
+            All
+        </button>
+        <button
+            id="tab-literary"
+            onclick="filterSubcategory('literary')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Literary Fiction
+        </button>
+        <button
+            id="tab-contemporary"
+            onclick="filterSubcategory('contemporary')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Contemporary Fiction
+        </button>
+        <button
+            id="tab-historical"
+            onclick="filterSubcategory('historical')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Historical Fiction
+        </button>
+        <button
+            id="tab-mystery"
+            onclick="filterSubcategory('mystery')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Mystery
+        </button>
+        <button
+            id="tab-thriller"
+            onclick="filterSubcategory('thriller')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Thriller
+        </button>
+        <button
+            id="tab-romance"
+            onclick="filterSubcategory('romance')"
+            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
+        >
+            Romance
+        </button>
+    </div>
+
+    <!-- Search and Sort Filters -->
+    <div class="flex flex-col md:flex-row gap-4 mb-10">
+        <div class="relative flex-1">
+            <input
+                type="search"
+                placeholder="Search within category..."
+                class="w-full p-3 pl-10 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150"
+            />
+            <svg
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+            </svg>
+        </div>
+        <div class="w-full md:w-48">
+            <select
+                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150"
+            >
+                <option>Title (A-Z)</option>
+                <option>Title (Z-A)</option>
+                <option>Newest First</option>
+                <option>Author</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Book Grid -->
+    <div
+        id="book-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+    >
+        <!-- Book Card 1: Gone Girl (Thriller) -->
+        <div
+            class="book-card subcategory-thriller subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+            <div class="h-64 bg-gray-300 relative">
+                <!-- Placeholder Image - Replace with dynamic image link -->
+                <img
+                    src="https://placehold.co/400x600/6B7280/FFFFFF?text=Gone+Girl"
+                    alt="Gone Girl cover"
+                    class="w-full h-full object-cover"
+                />
+                <span
+                    class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-md"
+                    >Issued</span
+                >
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 truncate">
+                    Gone Girl
+                </h3>
+                <p class="text-sm text-gray-600">Gillian Flynn</p>
+                <p class="text-xs text-gray-500 mb-4">Thriller</p>
+                <div class="flex justify-between space-x-2">
+                    <button
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                    >
+                        Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Card 2: Pride and Prejudice (Romance, Available) -->
+        <div
+            class="book-card subcategory-romance subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+            <div class="h-64 bg-gray-300 relative">
+                <!-- Placeholder Image - Replace with dynamic image link -->
+                <img
+                    src="https://placehold.co/400x600/FEE2E2/991B1B?text=Pride+&+Prejudice"
+                    alt="Pride and Prejudice cover"
+                    class="w-full h-full object-cover"
+                />
+                <span
+                    class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-md"
+                    >Available</span
+                >
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 truncate">
+                    Pride and Prejudice
+                </h3>
+                <p class="text-sm text-gray-600">Jane Austen</p>
+                <p class="text-xs text-gray-500 mb-4">Romance</p>
+                <div class="flex justify-between space-x-2">
+                    <button
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                    >
+                        Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Card 3: The Great Gatsby (Literary) -->
+        <div
+            class="book-card subcategory-literary subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+            <div class="h-64 bg-gray-300 relative">
+                <!-- Placeholder Image - Replace with dynamic image link -->
+                <img
+                    src="https://placehold.co/400x600/1F2937/FFFFFF?text=The+Great+Gatsby"
+                    alt="The Great Gatsby cover"
+                    class="w-full h-full object-cover"
+                />
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 truncate">
+                    The Great Gatsby
+                </h3>
+                <p class="text-sm text-gray-600">F. Scott Fitzgerald</p>
+                <p class="text-xs text-gray-500 mb-4">Literary Fiction</p>
+                <div class="flex justify-between space-x-2">
+                    <button
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                    >
+                        Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Card 4: The Da Vinci Code (Mystery) -->
+        <div
+            class="book-card subcategory-mystery subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+            <div class="h-64 bg-gray-300 relative">
+                <!-- Placeholder Image - Replace with dynamic image link -->
+                <img
+                    src="https://placehold.co/400x600/374151/FFFFFF?text=The+Da+Vinci+Code"
+                    alt="The Da Vinci Code cover"
+                    class="w-full h-full object-cover"
+                />
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 truncate">
+                    The Da Vinci Code
+                </h3>
+                <p class="text-sm text-gray-600">Dan Brown</p>
+                <p class="text-xs text-gray-500 mb-4">Mystery</p>
+                <div class="flex justify-between space-x-2">
+                    <button
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                    >
+                        Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Card 5: Where the Crawdads Sing (Contemporary) -->
+        <div
+            class="book-card subcategory-contemporary subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+            <div class="h-64 bg-gray-300 relative">
+                <!-- Placeholder Image - Replace with dynamic image link -->
+                <img
+                    src="https://placehold.co/400x600/D1D5DB/4B5563?text=Crawdads+Sing"
+                    alt="Where the Crawdads Sing cover"
+                    class="w-full h-full object-cover"
+                />
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 truncate">
+                    Where the Crawdads Sing
+                </h3>
+                <p class="text-sm text-gray-600">Delia Owens</p>
+                <p class="text-xs text-gray-500 mb-4">Contemporary Fiction</p>
+                <div class="flex justify-between space-x-2">
+                    <button
+                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                    >
+                        View Details
+                    </button>
+                    <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                    >
+                        Request Book
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Subcategory Filtering -->
+    <script>
+        /**
+         * Filters the book grid based on the selected subcategory.
+         * @param {string} category - The class name of the books to show (e.g., 'all', 'mystery').
+         */
+        function filterSubcategory(category) {
+            // Update active button state
+            document.querySelectorAll(".subcategory-tab").forEach((btn) => {
+                btn.classList.remove(
+                    "bg-blue-600",
+                    "text-white",
+                    "font-semibold"
+                );
+                btn.classList.add(
+                    "bg-gray-100",
+                    "text-gray-700",
+                    "font-medium"
+                );
+            });
+
+            const activeTabButton = document.getElementById(`tab-${category}`);
+            if (activeTabButton) {
+                activeTabButton.classList.add(
+                    "bg-blue-600",
+                    "text-white",
+                    "font-semibold"
+                );
+                activeTabButton.classList.remove(
+                    "bg-gray-100",
+                    "text-gray-700",
+                    "font-medium"
+                );
+            }
+
+            // Filter books
+            document.querySelectorAll(".book-card").forEach((card) => {
+                if (
+                    category === "all" ||
+                    card.classList.contains(`subcategory-${category}`)
+                ) {
+                    card.classList.remove("hidden");
+                } else {
+                    card.classList.add("hidden");
+                }
+            });
+        }
+
+        // Initialize to show the 'all' category on load
+        window.onload = () => filterSubcategory("all");
+    </script>
+</main>
+
+{% endblock %}

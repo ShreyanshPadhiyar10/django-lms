@@ -1,0 +1,97 @@
+{% include "index.html" %} 
+
+{% block content %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">My Books</h1>
+        <p class="text-xl text-gray-600">View your issued books and requests</p>
+    </header>
+
+    <!-- Main Content Grid (Issued Books and Requests) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Column 1: Issued Books -->
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Issued Books</h2>
+
+            <!-- Issued Book Card 1: The Great Gatsby -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6 flex justify-between items-start"
+            >
+                <div>
+                    <p class="text-xl font-semibold text-gray-900">
+                        The Great Gatsby
+                    </p>
+                    <p class="text-sm text-gray-600 mb-3">
+                        F. Scott Fitzgerald
+                    </p>
+                    <p class="text-sm text-gray-700">Due: 2025-01-19</p>
+                </div>
+                <button
+                    class="py-2 px-4 text-sm bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                >
+                    Return
+                </button>
+            </div>
+
+            <!-- Issued Book Card 2: To Kill a Mockingbird (Overdue Example) -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-red-200 mb-6 flex justify-between items-start"
+            >
+                <div>
+                    <p class="text-xl font-semibold text-gray-900">
+                        To Kill a Mockingbird
+                    </p>
+                    <p class="text-sm text-gray-600 mb-1">Harper Lee</p>
+
+                    <div class="flex items-center space-x-3 mt-2">
+                        <p class="text-sm font-medium text-red-600">
+                            Due: 2025-01-11
+                        </p>
+                        <span
+                            class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full"
+                            >Overdue</span
+                        >
+                    </div>
+                    <p class="text-md font-bold text-red-600 mt-2">Fine: $15</p>
+                </div>
+                <button
+                    class="py-2 px-4 text-sm bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition duration-150 shadow-md"
+                >
+                    Return
+                </button>
+            </div>
+
+            <!-- Placeholder for no issued books -->
+            <!-- <div class="p-6 bg-gray-50 rounded-xl text-center text-gray-500 border border-dashed border-gray-300">
+                You currently have no books issued.
+            </div> -->
+        </div>
+
+        <!-- Column 2: My Requests -->
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Requests</h2>
+
+            <!-- Pending Request Card 1: 1984 -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border border-yellow-200 mb-6 flex justify-between items-start"
+            >
+                <div>
+                    <p class="text-xl font-semibold text-gray-900">1984</p>
+                    <p class="text-sm text-gray-600 mb-3">George Orwell</p>
+                    <p class="text-sm text-gray-700">Requested on 2025-01-10</p>
+                </div>
+                <span
+                    class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm"
+                    >Pending</span
+                >
+            </div>
+
+            <!-- Placeholder for no pending requests -->
+            <!-- <div class="p-6 bg-gray-50 rounded-xl text-center text-gray-500 border border-dashed border-gray-300">
+                You have no outstanding book requests.
+            </div> -->
+        </div>
+    </div>
+</main>
+{% endblock %}

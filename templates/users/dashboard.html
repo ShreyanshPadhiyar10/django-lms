@@ -1,0 +1,286 @@
+{% include "index.html" %}
+
+
+{% block content %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Welcome Section and Stats -->
+    <header class="mb-10">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
+            Welcome to the Library
+        </h1>
+        <p class="text-xl text-gray-600 mb-6">
+            Discover your next favorite book
+        </p>
+
+        <!-- Quick Stats Cards (Always visible, responsive layout) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <!-- Stat 1: Books Issued -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
+            >
+                <p class="text-sm font-medium text-gray-500 mb-1">
+                    Books Issued
+                </p>
+                <div class="text-2xl font-bold text-blue-600">2</div>
+            </div>
+
+            <!-- Stat 2: Pending Requests -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
+            >
+                <p class="text-sm font-medium text-gray-500 mb-1">
+                    Pending Requests
+                </p>
+                <div class="text-2xl font-bold text-yellow-600">1</div>
+            </div>
+
+            <!-- Stat 3: Fines -->
+            <div
+                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
+            >
+                <p class="text-sm font-medium text-gray-500 mb-1">Fines</p>
+                <div class="text-2xl font-bold text-red-600">$0</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. Featured Books Section -->
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Books</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Book Card 1: The Great Gatsby -->
+            <div
+                class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100"
+            >
+                <div class="h-48 bg-gray-200 overflow-hidden">
+                    <!-- Placeholder Image (Book Stack) -->
+                    <img
+                        src="https://placehold.co/600x400/36454F/ffffff?text=The+Great+Gatsby"
+                        alt="The Great Gatsby"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="p-4">
+                    <p class="text-lg font-semibold text-gray-900 truncate">
+                        The Great Gatsby
+                    </p>
+                    <p class="text-sm text-gray-600">F. Scott Fitzgerald</p>
+                    <p class="text-xs text-blue-500 mb-4">Classic Literature</p>
+
+                    <div class="flex flex-col space-y-2">
+                        <button
+                            class="w-full py-2 text-sm bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                        >
+                            View Details
+                        </button>
+                        <button
+                            class="w-full py-2 text-sm bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150"
+                        >
+                            Request Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Card 2: To Kill a Mockingbird -->
+            <div
+                class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
+            >
+                <div class="h-48 bg-gray-200 overflow-hidden">
+                    <!-- Placeholder Image (Comic Collage) -->
+                    <img
+                        src="https://placehold.co/600x400/FF0000/ffffff?text=To+Kill+a+Mockingbird"
+                        alt="To Kill a Mockingbird"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="p-4">
+                    <p class="text-lg font-semibold text-gray-900 truncate">
+                        To Kill a Mockingbird
+                    </p>
+                    <p class="text-sm text-gray-600">Harper Lee</p>
+                    <p class="text-xs text-blue-500 mb-4">Fiction</p>
+
+                    <div class="flex flex-col space-y-2">
+                        <button
+                            class="w-full py-2 text-sm bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                        >
+                            View Details
+                        </button>
+                        <button
+                            class="w-full py-2 text-sm bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150"
+                        >
+                            Request Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Card 3: 1984 (Issued Status) -->
+            <div
+                class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
+            >
+                <span
+                    class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full z-10 shadow-md"
+                    >Issued</span
+                >
+                <div class="h-48 bg-gray-200 overflow-hidden">
+                    <!-- Placeholder Image (Open Book) -->
+                    <img
+                        src="https://placehold.co/600x400/1E40AF/ffffff?text=1984"
+                        alt="1984"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="p-4">
+                    <p class="text-lg font-semibold text-gray-900 truncate">
+                        1984
+                    </p>
+                    <p class="text-sm text-gray-600">George Orwell</p>
+                    <p class="text-xs text-blue-500 mb-4">Science Fiction</p>
+
+                    <div class="flex flex-col space-y-2">
+                        <button
+                            class="w-full py-2 text-sm bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                        >
+                            View Details
+                        </button>
+                        <!-- Issued book, Request button disabled/changed -->
+                        <button
+                            disabled
+                            class="w-full py-2 text-sm bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed"
+                        >
+                            Issued
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Card 4: Pride and Prejudice (Available Status) -->
+            <div
+                class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
+            >
+                <span
+                    class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full z-10 shadow-md"
+                    >Available</span
+                >
+                <div class="h-48 bg-gray-200 overflow-hidden">
+                    <!-- Placeholder Image (Candle and Book) -->
+                    <img
+                        src="https://placehold.co/600x400/991B1B/ffffff?text=Pride+and+Prejudice"
+                        alt="Pride and Prejudice"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+                <div class="p-4">
+                    <p class="text-lg font-semibold text-gray-900 truncate">
+                        Pride and Prejudice
+                    </p>
+                    <p class="text-sm text-gray-600">Jane Austen</p>
+                    <p class="text-xs text-blue-500 mb-4">Romance</p>
+
+                    <div class="flex flex-col space-y-2">
+                        <button
+                            class="w-full py-2 text-sm bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
+                        >
+                            View Details
+                        </button>
+                        <button
+                            class="w-full py-2 text-sm bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150"
+                        >
+                            Request Book
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Browse by Category Section -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+            Browse by Category
+        </h2>
+
+        <div
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+        >
+            <!-- Category 1: Fiction -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">Fiction</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >245</span
+                >
+            </a>
+
+            <!-- Category 2: Non-Fiction -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">Non-Fiction</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >189</span
+                >
+            </a>
+
+            <!-- Category 3: Science -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">Science</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >156</span
+                >
+            </a>
+
+            <!-- Category 4: History -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">History</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >134</span
+                >
+            </a>
+
+            <!-- Category 5: Biography -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">Biography</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >98</span
+                >
+            </a>
+
+            <!-- Category 6: Technology -->
+            <a
+                href="#"
+                class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
+            >
+                <span class="font-medium text-gray-700">Technology</span>
+                <span
+                    class="text-xs font-semibold text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full"
+                    >87</span
+                >
+            </a>
+        </div>
+    </section>
+</main>
+
+{% endblock %}
+

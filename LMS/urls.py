@@ -28,4 +28,9 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('requests/', views.requests, name='requests'),
     path('settings/', views.settings, name='settings'),
+    path('user_dashboard', views.userDashboard, name='userDashboard'),
+    path('my_books', views.myBooks, name='myBooks'),
+    path('my_requests', views.myRequests, name='myRequests'),
+    path('browse', views.browse, name='browse'),
+    path('details', views.details, name='details'),
 ]

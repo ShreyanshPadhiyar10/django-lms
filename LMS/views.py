@@ -24,3 +24,18 @@ def requests(request):
 
 def settings(request):
     return render(request, 'admin/settings.html')
+
+def userDashboard(request):
+    return render(request, 'users/dashboard.html')
+
+def browse(request):
+    return render(request, 'users/browse.html')
+
+def myBooks(request):
+    return render(request, 'users/books.html')
+
+def myRequests(request):
+    return render(request, 'users/requests.html')
+
+def details(request):
+    return render(request, 'users/details.html')
