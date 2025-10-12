@@ -13,8 +13,8 @@ def books(request):
 def add_book(request):
     return render(request, 'admin/add_book.html')
 
-def issue_return(request):
-    return render(request, 'admin/issue_return.html')
+def issue_receive(request):
+    return render(request, 'admin/issue_receive.html')
 
 def users(request):
     return render(request, 'admin/users.html')
@@ -38,4 +38,4 @@ def myRequests(request):
     return render(request, 'users/requests.html')
 
 def details(request):
-    return render(request, 'users/details.html')
+    return render(request, 'details/details.html')
