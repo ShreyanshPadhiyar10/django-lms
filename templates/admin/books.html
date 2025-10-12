@@ -103,6 +103,18 @@
                                 Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
                             </p>
                         </div>
+                            <div class="flex gap-3 mt-3">
+                            <button
+                                class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                            >
+                                View Details
+                            </button>
+                            <button
+                                class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                            >
+                                Request Book
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}

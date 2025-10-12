@@ -44,7 +44,21 @@ def userDashboard(request):
     return render(request, 'users/dashboard.html')
 
 def browse(request):
-    return render(request, 'users/browse.html')
+    all_books_list = Book.objects.all().order_by('title')
+    
+    # Create a Paginator object with 8 books per page. You can change this number.
+    paginator = Paginator(all_books_list, 8) 
+
+    # Get the current page number from the URL's query parameters (e.g., /books/?page=2)
+    page_number = request.GET.get('page')
+    
+    # Get the Page object for the requested page number
+    books_page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'books_page': books_page_obj,
+    }
+    return render(request, 'users/browse.html', context)
 
 def myBooks(request):
     return render(request, 'users/books.html')

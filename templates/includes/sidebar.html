@@ -7,12 +7,17 @@
         <div
             class="p-6 flex items-center justify-between border-b border-gray-100"
         >
-            <span class="text-xl font-semibold text-gray-900">LMS 360</span>
-            <img
-                src="{% static 'images/logo.png' %}"
-                alt="Library Logo"
-                class="h-12 w-12"
-            />
+            <a
+                href="{% url 'dashboard' %}"
+                class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2 hover:opacity-90 transition duration-150"
+            >
+                <span>MyLibrary</span>
+                <img
+                    src="{% static 'images/logo.png' %}"
+                    alt="Library Logo"
+                    class="h-12 w-12"
+                />
+            </a>
         </div>
 
         <nav class="flex-grow p-4 space-y-2">

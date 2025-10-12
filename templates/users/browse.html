@@ -121,183 +121,89 @@
     </div>
 
     <!-- Book Grid -->
-    <div
-        id="book-grid"
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-    >
-        <!-- Book Card 1: Gone Girl (Thriller) -->
-        <div
-            class="book-card subcategory-thriller subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-        >
-            <div class="h-64 bg-gray-300 relative">
-                <!-- Placeholder Image - Replace with dynamic image link -->
-                <img
-                    src="https://placehold.co/400x600/6B7280/FFFFFF?text=Gone+Girl"
-                    alt="Gone Girl cover"
-                    class="w-full h-full object-cover"
-                />
-                <span
-                    class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-md"
-                    >Issued</span
-                >
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-900 truncate">
-                    Gone Girl
-                </h3>
-                <p class="text-sm text-gray-600">Gillian Flynn</p>
-                <p class="text-xs text-gray-500 mb-4">Thriller</p>
-                <div class="flex justify-between space-x-2">
-                    <button
-                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                    >
-                        Request Book
-                    </button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Book Card 2: Pride and Prejudice (Romance, Available) -->
-        <div
-            class="book-card subcategory-romance subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-        >
-            <div class="h-64 bg-gray-300 relative">
-                <!-- Placeholder Image - Replace with dynamic image link -->
-                <img
-                    src="https://placehold.co/400x600/FEE2E2/991B1B?text=Pride+&+Prejudice"
-                    alt="Pride and Prejudice cover"
-                    class="w-full h-full object-cover"
-                />
-                <span
-                    class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-md"
-                    >Available</span
-                >
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-900 truncate">
-                    Pride and Prejudice
-                </h3>
-                <p class="text-sm text-gray-600">Jane Austen</p>
-                <p class="text-xs text-gray-500 mb-4">Romance</p>
-                <div class="flex justify-between space-x-2">
-                    <button
-                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                    >
-                        Request Book
-                    </button>
-                </div>
-            </div>
-        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-        <!-- Book Card 3: The Great Gatsby (Literary) -->
-        <div
-            class="book-card subcategory-literary subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-        >
-            <div class="h-64 bg-gray-300 relative">
-                <!-- Placeholder Image - Replace with dynamic image link -->
-                <img
-                    src="https://placehold.co/400x600/1F2937/FFFFFF?text=The+Great+Gatsby"
-                    alt="The Great Gatsby cover"
-                    class="w-full h-full object-cover"
-                />
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-900 truncate">
-                    The Great Gatsby
-                </h3>
-                <p class="text-sm text-gray-600">F. Scott Fitzgerald</p>
-                <p class="text-xs text-gray-500 mb-4">Literary Fiction</p>
-                <div class="flex justify-between space-x-2">
-                    <button
-                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                    >
-                        Request Book
-                    </button>
-                </div>
-            </div>
-        </div>
+                {% for book in books_page %}
+                <div
+                    class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transition-transform duration-300 ease-in-out hover:-translate-y-2">
 
-        <!-- Book Card 4: The Da Vinci Code (Mystery) -->
-        <div
-            class="book-card subcategory-mystery subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-        >
-            <div class="h-64 bg-gray-300 relative">
-                <!-- Placeholder Image - Replace with dynamic image link -->
-                <img
-                    src="https://placehold.co/400x600/374151/FFFFFF?text=The+Da+Vinci+Code"
-                    alt="The Da Vinci Code cover"
-                    class="w-full h-full object-cover"
-                />
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-900 truncate">
-                    The Da Vinci Code
-                </h3>
-                <p class="text-sm text-gray-600">Dan Brown</p>
-                <p class="text-xs text-gray-500 mb-4">Mystery</p>
-                <div class="flex justify-between space-x-2">
-                    <button
-                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                    >
-                        Request Book
-                    </button>
-                </div>
-            </div>
-        </div>
+                    <div class="relative">
+                        {% if book.available_copies > 0 %}
+                        <span
+                            class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
+                        {% else %}
+                        <span
+                            class="absolute top-2 right-2 bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">Unavailable</span>
+                        {% endif %}
+                        <img class="w-full h-64 object-cover"
+                            src="{{ book.image_url|default:'https://via.placeholder.com/400x600.png?text=No+Image' }}"
+                            alt="Cover of {{ book.title }}">
+                    </div>
 
-        <!-- Book Card 5: Where the Crawdads Sing (Contemporary) -->
-        <div
-            class="book-card subcategory-contemporary subcategory-all bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300"
-        >
-            <div class="h-64 bg-gray-300 relative">
-                <!-- Placeholder Image - Replace with dynamic image link -->
-                <img
-                    src="https://placehold.co/400x600/D1D5DB/4B5563?text=Crawdads+Sing"
-                    alt="Where the Crawdads Sing cover"
-                    class="w-full h-full object-cover"
-                />
-            </div>
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-900 truncate">
-                    Where the Crawdads Sing
-                </h3>
-                <p class="text-sm text-gray-600">Delia Owens</p>
-                <p class="text-xs text-gray-500 mb-4">Contemporary Fiction</p>
-                <div class="flex justify-between space-x-2">
-                    <button
-                        class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                    >
-                        View Details
-                    </button>
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                    >
-                        Request Book
-                    </button>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 truncate">{{ book.title }}</h3>
+                        <p class="text-sm text-gray-600 mb-3">by {{ book.author }}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for genre in book.genre.all %}
+                            <span class="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">{{ genre.genre_name }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="flex-grow"></div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <p class="text-sm text-gray-700 font-medium mb-3">
+                                Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
+                            </p>
+                        </div>
+                            <div class="flex gap-3 mt-3">
+                            <button
+                                class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
+                            >
+                                View Details
+                            </button>
+                            <button
+                                class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+                            >
+                                Request Book
+                            </button>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
+
+            </div>
+
+            <div class="flex justify-center items-center mt-10 space-x-2">
+                {% if books_page.has_previous %}
+                <a href="?page={{ books_page.previous_page_number }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    &laquo; Previous
+                </a>
+                {% endif %}
+
+                {% for num in books_page.paginator.page_range %}
+                {% if books_page.number == num %}
+                <a href="#"
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg z-10">
+                    {{ num }}
+                </a>
+                {% else %}
+                <a href="?page={{ num }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    {{ num }}
+                </a>
+                {% endif %}
+                {% endfor %}
+
+                {% if books_page.has_next %}
+                <a href="?page={{ books_page.next_page_number }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    Next &raquo;
+                </a>
+                {% endif %}
             </div>
         </div>
-    </div>
 
     <!-- JavaScript for Subcategory Filtering -->
     <script>

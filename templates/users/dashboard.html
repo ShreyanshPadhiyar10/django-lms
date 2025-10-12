@@ -1,10 +1,6 @@
-{% include "index.html" %}
-
-
-{% block content %}
+{% include "index.html" %} {% block content %}
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Welcome Section and Stats -->
     <header class="mb-10">
         <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
             Welcome to the Library
@@ -13,49 +9,113 @@
             Discover your next favorite book
         </p>
 
-        <!-- Quick Stats Cards (Always visible, responsive layout) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <!-- Stat 1: Books Issued -->
-            <div
-                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
-            >
-                <p class="text-sm font-medium text-gray-500 mb-1">
-                    Books Issued
-                </p>
-                <div class="text-2xl font-bold text-blue-600">2</div>
-            </div>
+            <a href="{% url 'myBooks' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Books Issued
+                        </p>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="text-gray-400"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+                            />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-blue-600">2</div>
+                </div>
+            </a>
 
-            <!-- Stat 2: Pending Requests -->
-            <div
-                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
-            >
-                <p class="text-sm font-medium text-gray-500 mb-1">
-                    Pending Requests
-                </p>
-                <div class="text-2xl font-bold text-yellow-600">1</div>
-            </div>
+            <a href="{% url 'myRequests' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Pending Requests
+                        </p>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="text-gray-400"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"
+                            />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-yellow-600">1</div>
+                </div>
+            </a>
 
-            <!-- Stat 3: Fines -->
-            <div
-                class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between"
-            >
-                <p class="text-sm font-medium text-gray-500 mb-1">Fines</p>
-                <div class="text-2xl font-bold text-red-600">$0</div>
-            </div>
+            <a href="{% url 'myBooks' %}">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <p class="text-sm font-medium text-gray-500 mb-1">
+                            Fines
+                        </p>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="text-gray-400"
+                        >
+                            <path
+                                fill="none"
+                                stroke="#000000"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M6.5 3.5h11m-11 4.722h11M14.292 20.5L6.5 12.944h2.75c6.111 0 6.111-9.444 0-9.444"
+                            />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-bold text-red-600">&#x20B9 0</div>
+                </div>
+            </a>
         </div>
     </header>
 
-    <!-- 3. Featured Books Section -->
     <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Books</h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Book Card 1: The Great Gatsby -->
             <div
                 class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100"
             >
                 <div class="h-48 bg-gray-200 overflow-hidden">
-                    <!-- Placeholder Image (Book Stack) -->
                     <img
                         src="https://placehold.co/600x400/36454F/ffffff?text=The+Great+Gatsby"
                         alt="The Great Gatsby"
@@ -84,12 +144,10 @@
                 </div>
             </div>
 
-            <!-- Book Card 2: To Kill a Mockingbird -->
             <div
                 class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
             >
                 <div class="h-48 bg-gray-200 overflow-hidden">
-                    <!-- Placeholder Image (Comic Collage) -->
                     <img
                         src="https://placehold.co/600x400/FF0000/ffffff?text=To+Kill+a+Mockingbird"
                         alt="To Kill a Mockingbird"
@@ -118,7 +176,6 @@
                 </div>
             </div>
 
-            <!-- Book Card 3: 1984 (Issued Status) -->
             <div
                 class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
             >
@@ -127,7 +184,6 @@
                     >Issued</span
                 >
                 <div class="h-48 bg-gray-200 overflow-hidden">
-                    <!-- Placeholder Image (Open Book) -->
                     <img
                         src="https://placehold.co/600x400/1E40AF/ffffff?text=1984"
                         alt="1984"
@@ -147,7 +203,6 @@
                         >
                             View Details
                         </button>
-                        <!-- Issued book, Request button disabled/changed -->
                         <button
                             disabled
                             class="w-full py-2 text-sm bg-gray-400 text-white font-medium rounded-lg cursor-not-allowed"
@@ -158,7 +213,6 @@
                 </div>
             </div>
 
-            <!-- Book Card 4: Pride and Prejudice (Available Status) -->
             <div
                 class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden relative border border-gray-100"
             >
@@ -167,7 +221,6 @@
                     >Available</span
                 >
                 <div class="h-48 bg-gray-200 overflow-hidden">
-                    <!-- Placeholder Image (Candle and Book) -->
                     <img
                         src="https://placehold.co/600x400/991B1B/ffffff?text=Pride+and+Prejudice"
                         alt="Pride and Prejudice"
@@ -198,18 +251,14 @@
         </div>
     </section>
 
-    <!-- 4. Browse by Category Section -->
     <section class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">
-            Browse by Category
-        </h2>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse by Genre</h2>
 
         <div
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
         >
-            <!-- Category 1: Fiction -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">Fiction</span>
@@ -219,9 +268,8 @@
                 >
             </a>
 
-            <!-- Category 2: Non-Fiction -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">Non-Fiction</span>
@@ -231,9 +279,8 @@
                 >
             </a>
 
-            <!-- Category 3: Science -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">Science</span>
@@ -243,9 +290,8 @@
                 >
             </a>
 
-            <!-- Category 4: History -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">History</span>
@@ -255,9 +301,8 @@
                 >
             </a>
 
-            <!-- Category 5: Biography -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">Biography</span>
@@ -267,9 +312,8 @@
                 >
             </a>
 
-            <!-- Category 6: Technology -->
             <a
-                href="#"
+                href="{% url 'browse' %}"
                 class="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex justify-between items-center hover:bg-gray-50 transition duration-200"
             >
                 <span class="font-medium text-gray-700">Technology</span>
@@ -283,4 +327,3 @@
 </main>
 
 {% endblock %}
-
