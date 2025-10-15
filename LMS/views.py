@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect 
+from django.shortcuts import render , redirect, get_object_or_404
 from library_db.models import Book, Genre, Language
 from django.core.paginator import Paginator
 from django.core.cache import cache
@@ -172,5 +172,6 @@ def myBooks(request):
 def myRequests(request):
     return render(request, 'users/requests.html')
 
-def details(request):
-    return render(request, 'details/details.html')
+def details(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
+    return render(request, 'details/details.html', {'book': book})
