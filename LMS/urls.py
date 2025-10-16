@@ -35,4 +35,7 @@ urlpatterns = [
     path('user/requests', views.myRequests, name='myRequests'),
     path('user/browse', views.browse, name='browse'),
     path('book/<int:book_id>/', views.details, name='details'),
+
+    path('user_auth', views.user_auth, name='user_auth'),
+    path('admin_auth', views.admin_auth, name='admin_auth'),
 ]

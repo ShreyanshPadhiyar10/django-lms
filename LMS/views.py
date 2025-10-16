@@ -175,3 +175,9 @@ def myRequests(request):
 def details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'details/details.html', {'book': book})
+
+def user_auth(request):
+    return render(request, 'auth/user_auth.html')
+
+def admin_auth(request):
+    return render(request, 'auth/admin_auth.html')
