@@ -1,0 +1,161 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Student Registration</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #f0f7ff;
+            }
+            .login-card {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Smoother shadow */
+            }
+            input:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+            }
+        </style>
+    </head>
+    <body
+        class="flex flex-col items-center justify-center min-h-screen p-4 bg-[#f0f7ff] font-[Inter]"
+    >
+        <div id="message-box" class="hidden"></div>
+
+        <header class="text-center mb-8">
+            <div
+                class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2"
+            >
+                <a
+                    href="{% url 'userDashboard' %}"
+                    class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2 hover:opacity-90 transition duration-150"
+                >
+                    <img
+                        src="{% static 'images/logo.png' %}"
+                        alt="Library Logo"
+                        class="h-12 w-12"
+                    />
+                    <span>MyLibrary</span>
+                </a>
+            </div>
+        </header>
+
+        <div
+            class="bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-sm login-card"
+        >
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                Student Registration
+            </h2>
+            <p class="text-sm text-gray-500 mb-6">
+                Create your account to join the library.
+            </p>
+
+            <form
+                id="access-form"
+                onsubmit="handleSubmit(event)"
+                method="POST"
+                action="/student/signup"
+            >
+                <div class="mb-4">
+                    <label
+                        for="name"
+                        class="block text-sm font-medium text-gray-700"
+                        >Full Name</label
+                    >
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
+                        placeholder="Enter your full name"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="username"
+                        class="block text-sm font-medium text-gray-700"
+                        >New Username / Student ID</label
+                    >
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
+                        placeholder="Choose your ID or email"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="password"
+                        class="block text-sm font-medium text-gray-700"
+                        >Password</label
+                    >
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
+                        placeholder="Choose a password"
+                        required
+                    />
+                </div>
+
+                <div class="mb-6">
+                    <label
+                        for="confirm-password"
+                        class="block text-sm font-medium text-gray-700"
+                        >Confirm Password</label
+                    >
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        name="confirm-password"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
+                        placeholder="Confirm your password"
+                        required
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                >
+                    Register New Student
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center mt-6 text-sm flex space-x-4">
+            <p class="text-gray-500">
+                Already have an account?
+                <a
+                    href="{% url 'user_login' %}"
+                    class="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition duration-150"
+                >
+                    Login &rarr;
+                </a>
+            </p>
+        </div>
+        <div class="text-center mt-6 text-sm flex space-x-4">
+            <a
+                href="{% url 'user_signup' %}"
+                class="font-medium text-gray-500 hover:text-gray-700"
+            >
+                Admin Login &rarr;
+            </a>
+        </div>
+    </body>
+</html>
