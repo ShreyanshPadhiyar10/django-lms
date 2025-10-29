@@ -1,13 +1,13 @@
 from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language
+from library_db.models import Book, Genre, Language, User
+from django.db.models import Q
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from functools import reduce
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-import re
 import pickle
-
 
 def home(request):
     return render(request, 'admin/dashboard.html')
@@ -180,6 +180,30 @@ def user_login(request):
     return render(request, 'auth/user_login.html')
 
 def user_signup(request):
+    if request.method == 'POST':
+        # Handle user signup logic here
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        password = request.POST.get('password') 
+
+        if not (name and phone and email and password):
+            error_message = "All fields are required."
+            return render(request, 'auth/user_signup.html', {'error_message': error_message})
+        
+        if User.objects.filter(Q(email = email) | Q(phone = phone)).exists():
+            error_message = "A user with this email or phone number already exists."
+            return render(request, 'auth/user_signup.html', {'error_message': error_message})
+        
+        user = User.objects.create(
+            name = name,
+            phone = phone,
+            email = email,
+            password = password
+        )
+
+        messages.success(request, "Registration successful. You are now logged in.")
+        return redirect('userDashboard')
     return render(request, 'auth/user_signup.html')
 
 def admin_login(request):

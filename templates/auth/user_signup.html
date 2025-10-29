@@ -61,10 +61,11 @@
 
             <form
                 id="access-form"
-                onsubmit="handleSubmit(event)"
                 method="POST"
-                action="/student/signup"
+                action="{% url 'user_signup' %}"
             >
+                {% csrf_token %}
+
                 <div class="mb-4">
                     <label
                         for="name"
@@ -136,6 +137,14 @@
                     Register New Student
                 </button>
             </form>
+
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="text-sm {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <div class="text-center mt-6 text-sm flex space-x-4">
