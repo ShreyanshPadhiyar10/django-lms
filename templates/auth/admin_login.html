@@ -52,9 +52,9 @@
         <div
             class="bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-sm login-card"
         >
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Student Login</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Admin Login</h2>
             <p class="text-sm text-gray-500 mb-6">
-                Sign in to access the library catalog and your books.
+                Sign in to manage the library system.
             </p>
 
             <form
@@ -65,16 +65,16 @@
             >
                 <div class="mb-4">
                     <label
-                        for="username"
+                        for="email"
                         class="block text-sm font-medium text-gray-700"
-                        >Username / Student ID</label
+                        >Email</label
                     >
                     <input
-                        type="text"
-                        id="username"
-                        name="username"
+                        type="email"
+                        id="email"
+                        name="email"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
-                        placeholder="Enter your ID or email"
+                        placeholder="Enter your email address"
                         required
                     />
                 </div>
@@ -105,22 +105,11 @@
         </div>
 
         <div class="text-center mt-6 text-sm flex space-x-4">
-            <p class="text-gray-500">
-                Don't have an account?
-                <a
-                    href="{% url 'user_signup' %}"
-                    class="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition duration-150"
-                >
-                    Sign Up &rarr;
-                </a>
-            </p>
-        </div>
-        <div class="text-center mt-6 text-sm flex space-x-4">
             <a
-                href="{% url 'admin_login' %}"
+                href="{% url 'user_login' %}"
                 class="font-medium text-gray-500 hover:text-gray-700"
             >
-                Admin Login &rarr;
+                User Login &rarr;
             </a>
         </div>
     </body>

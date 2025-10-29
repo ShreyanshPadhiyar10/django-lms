@@ -182,5 +182,5 @@ def user_login(request):
 def user_signup(request):
     return render(request, 'auth/user_signup.html')
 
-def admin_auth(request):
-    return render(request, 'auth/admin_auth.html')
+def admin_login(request):
+    return render(request, 'auth/admin_login.html')

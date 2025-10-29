@@ -69,30 +69,46 @@
                     <label
                         for="name"
                         class="block text-sm font-medium text-gray-700"
-                        >Full Name</label
+                        >Name</label
                     >
                     <input
                         type="text"
                         id="name"
                         name="name"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
-                        placeholder="Enter your full name"
+                        placeholder="Enter your name"
                         required
                     />
                 </div>
 
                 <div class="mb-4">
                     <label
-                        for="username"
+                        for="phone"
                         class="block text-sm font-medium text-gray-700"
-                        >New Username / Student ID</label
+                        >Phone</label
                     >
                     <input
-                        type="text"
-                        id="username"
-                        name="username"
+                        type="number"
+                        id="phone"
+                        name="phone"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
-                        placeholder="Choose your ID or email"
+                        placeholder="Enter your phone number"
+                        required
+                    />
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="email"
+                        class="block text-sm font-medium text-gray-700"
+                        >Email</label
+                    >
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
+                        placeholder="Enter your email address"
                         required
                     />
                 </div>
@@ -109,22 +125,6 @@
                         name="password"
                         class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
                         placeholder="Choose a password"
-                        required
-                    />
-                </div>
-
-                <div class="mb-6">
-                    <label
-                        for="confirm-password"
-                        class="block text-sm font-medium text-gray-700"
-                        >Confirm Password</label
-                    >
-                    <input
-                        type="password"
-                        id="confirm-password"
-                        name="confirm-password"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 transition duration-150"
-                        placeholder="Confirm your password"
                         required
                     />
                 </div>
@@ -151,7 +151,7 @@
         </div>
         <div class="text-center mt-6 text-sm flex space-x-4">
             <a
-                href="{% url 'user_signup' %}"
+                href="{% url 'admin_login' %}"
                 class="font-medium text-gray-500 hover:text-gray-700"
             >
                 Admin Login &rarr;
