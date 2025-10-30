@@ -1,39 +1,3 @@
-# # your_app/management/commands/build_search_index.py
-
-# import re
-# from django.core.management.base import BaseCommand
-# from django.core.cache import cache
-# from library_db.models import Book
-
-# class Command(BaseCommand):
-#     help = 'Builds the search index for books'
-
-#     def handle(self, *args, **options):
-#         self.stdout.write('Building the book search index...')
-        
-#         inverted_index = {}
-        
-#         # 1. Get all books from the database
-#         books = Book.objects.all()
-        
-#         for book in books:
-#             # 2. Combine searchable text fields
-#             content = f"{book.title} {book.description}"
-            
-#             # 3. Pre-process the text: lowercase and find all words
-#             # This simple regex splits by non-alphanumeric characters
-#             words = set(re.findall(r'\w+', content.lower()))
-            
-#             # 4. Populate the index
-#             for word in words:
-#                 if word not in inverted_index:
-#                     inverted_index[word] = set()
-#                 inverted_index[word].add(book.pk)
-        
-#         # 5. Save the index to Django's cache to be used by the view
-#         cache.set('book_search_index', inverted_index, timeout=None) # None = cache forever
-        
-#         self.stdout.write(self.style.SUCCESS('Successfully built and cached the search index.'))
 
 import re
 from django.core.management.base import BaseCommand

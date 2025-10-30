@@ -3,15 +3,11 @@
 {% block content %}
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Column 2: My Requests (Wrapped in a single container for better visual grouping) -->
         <div>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">My Requests</h2>
 
-            <!-- Requests Container (Mimics the clean card style of the other components) -->
             <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                
-                <!-- Tab Buttons -->
-                <!-- Simplified tab container to match the request section design -->
+
                 <div class="flex space-x-2 border-b border-gray-200 mb-4 -mx-6 px-6">
                     <button id="tab-pending" onclick="showRequestTab('pending')" class="tab-button py-2 px-1 text-sm font-semibold border-b-2 border-blue-600 text-blue-700 transition duration-200">
                         Pending (1)
@@ -24,13 +20,7 @@
                     </button>
                 </div>
 
-
-                <!-- Tab Content Containers -->
-                
-                <!-- Pending Tab Content -->
-                <!-- Cards are slightly smaller and cleaner inside the main container -->
                 <div id="content-pending" class="request-tab-content pt-4">
-                    <!-- Pending Request Card 1: 1984 -->
                     <div class="p-4 rounded-xl border border-yellow-200 flex justify-between items-start bg-yellow-50 hover:shadow-md transition duration-300">
                         <div>
                             <p class="text-lg font-semibold text-gray-900">1984</p>
@@ -41,9 +31,7 @@
                     </div>
                 </div>
 
-                <!-- Approved Tab Content -->
                 <div id="content-approved" class="request-tab-content hidden pt-4">
-                    <!-- Approved Request Card 1: The Martian -->
                     <div class="p-4 rounded-xl border border-green-200 flex justify-between items-start bg-green-50 hover:shadow-md transition duration-300">
                         <div>
                             <p class="text-lg font-semibold text-gray-900">The Martian</p>
@@ -54,9 +42,7 @@
                     </div>
                 </div>
 
-                <!-- Rejected Tab Content -->
                 <div id="content-rejected" class="request-tab-content hidden pt-4">
-                    <!-- Rejected Request Card 1: Dune -->
                     <div class="p-4 rounded-xl border border-red-200 flex justify-between items-start bg-red-50 hover:shadow-md transition duration-300">
                         <div>
                             <p class="text-lg font-semibold text-gray-900">Dune</p>
@@ -70,39 +56,29 @@
         </div>
     </div>
     
-    <!-- JavaScript for Tab Switching (UPDATED) -->
     <script>
-        /**
-         * Switches the content shown in the My Requests section based on the selected tab.
-         * @param {string} tabId - 'pending', 'approved', or 'rejected'.
-         */
         function showRequestTab(tabId) {
-            // Remove active state from all buttons and add default styling
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('border-blue-600', 'text-blue-700', 'font-semibold');
                 btn.classList.add('border-transparent', 'text-gray-700', 'font-medium');
             });
 
-            // Hide all content areas
             document.querySelectorAll('.request-tab-content').forEach(content => {
                 content.classList.add('hidden');
             });
 
-            // Set active state on the clicked button
             const activeTabButton = document.getElementById(`tab-${tabId}`);
             if (activeTabButton) {
                 activeTabButton.classList.add('border-blue-600', 'text-blue-700', 'font-semibold');
                 activeTabButton.classList.remove('border-transparent', 'text-gray-700', 'font-medium');
             }
 
-            // Show the corresponding content area
             const activeContent = document.getElementById(`content-${tabId}`);
             if (activeContent) {
                 activeContent.classList.remove('hidden');
             }
         }
 
-        // Initialize to show the Pending tab on load
         window.onload = () => showRequestTab('pending');
     </script>
 </main>

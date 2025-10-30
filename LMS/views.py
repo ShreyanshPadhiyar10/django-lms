@@ -18,13 +18,10 @@ def dashboard(request):
 def books(request):
     all_books_list = Book.objects.all().order_by('title')
     
-    # Create a Paginator object with 8 books per page. You can change this number.
     paginator = Paginator(all_books_list, 8) 
 
-    # Get the current page number from the URL's query parameters (e.g., /books/?page=2)
     page_number = request.GET.get('page')
     
-    # Get the Page object for the requested page number
     books_page_obj = paginator.get_page(page_number)
     
     context = {
@@ -43,7 +40,6 @@ class Trie:
     def __init__(self):
         self.root = TrieNode()
     def insert(self, word, book_id):
-        # ... (methods are needed for unpickling but not used in the view)
         pass
     def search_prefix(self, prefix):
         node = self.root
@@ -57,7 +53,6 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
-# New API view to handle live search requests from JavaScript
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -65,7 +60,6 @@ def filter_books(request):
     genre_id = request.GET.get('genre', '')
     language_id = request.GET.get('language', '')
     
-    # --- UPDATED DSA LOGIC: Use the Trie for prefix search ---
     if search_query:
         pickled_trie = cache.get('book_trie_index')
         if pickled_trie:
@@ -74,18 +68,15 @@ def filter_books(request):
             if matching_ids:
                 queryset = queryset.filter(pk__in=matching_ids)
             else:
-                queryset = queryset.none() # No results if prefix not found
+                queryset = queryset.none() 
         else:
-            # Fallback to a simple contains search if Trie isn't built
             queryset = queryset.filter(title__icontains=search_query)
 
-    # Genre and Language filters remain the same
     if genre_id:
         queryset = queryset.filter(genre__pk=genre_id)
     if language_id:
         queryset = queryset.filter(language__pk=language_id)
 
-    # Pagination and response logic remains the same
     page_number = request.GET.get('page', 1)
     paginator = Paginator(queryset, 8)
     page_obj = paginator.get_page(page_number)
@@ -95,20 +86,16 @@ def filter_books(request):
 
 def add_book(request):
     if request.method == 'POST':
-        # --- Retrieve data from the form ---
         title = request.POST.get('title')
         author = request.POST.get('author')
         isbn = request.POST.get('isbn')
         total_copies = request.POST.get('total_copies')
         description = request.POST.get('description')
         
-        # --- Handle Language (Get or Create) ---
         language_name = request.POST.get('language')
         # This one line finds the language if it exists, or creates it if it doesn't.
         language_obj, _ = Language.objects.get_or_create(language_name=language_name.strip())
 
-        # --- Create the Book instance ---
-        # Note: available_copies is set to total_copies automatically for a new book.
         book = Book.objects.create(
             title=title,
             author=author,
@@ -116,18 +103,14 @@ def add_book(request):
             language=language_obj,
             description=description,
             total_copies=total_copies,
-            available_copies=total_copies # New book starts with all copies available
+            available_copies=total_copies 
         )
         
-        # --- Handle Genres (Comma-separated list) ---
         genres_string = request.POST.get('genres')
-        # Split the string by commas, strip whitespace from each, and filter out any empty strings
         genre_names = [name.strip() for name in genres_string.split(',') if name.strip()]
         
         for name in genre_names:
-            # For each genre name, get it if it exists or create a new one
             genre_obj, _ = Genre.objects.get_or_create(genre_name=name)
-            # Add the genre to the book's ManyToMany relationship
             book.genre.add(genre_obj)
             
         return redirect('books')
@@ -152,13 +135,10 @@ def userDashboard(request):
 def browse(request):
     all_books_list = Book.objects.all().order_by('title')
     
-    # Create a Paginator object with 8 books per page. You can change this number.
     paginator = Paginator(all_books_list, 8) 
 
-    # Get the current page number from the URL's query parameters (e.g., /books/?page=2)
     page_number = request.GET.get('page')
     
-    # Get the Page object for the requested page number
     books_page_obj = paginator.get_page(page_number)
     
     context = {

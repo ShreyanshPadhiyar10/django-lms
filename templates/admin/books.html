@@ -6,10 +6,8 @@
 
 <div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
 
-    <!-- Top Nav/Header for Mobile (Important for responsiveness) -->
     <header class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10">
         <button class="text-gray-600 hover:text-blue-700">
-            <!-- Menu Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" x2="21" y1="12" y2="12" />
@@ -19,7 +17,6 @@
         </button>
         <span class="text-lg font-semibold text-gray-900">Library Admin</span>
         <button class="text-gray-600 hover:text-blue-700">
-            <!-- User Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -75,7 +72,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Get references to all the interactive elements
         const searchInput = document.getElementById('search-input');
         const genreFilter = document.getElementById('genre-filter');
         const languageFilter = document.getElementById('language-filter');
@@ -83,15 +79,12 @@
         const paginationContainer = document.getElementById('pagination-container');
         const bookGridContainer = document.getElementById('book-grid-container');
 
-        // A timer to prevent making a request on every single keystroke (debounce)
         let debounceTimeout;
-        // This is the main function that fetches updated book data from the server
         async function fetchBooks(page = 1) {
             const searchQuery = searchInput.value;
             const genreId = genreFilter.value;
             const languageId = languageFilter.value;
 
-            // Build the URL with the current filter values as query parameters
             const params = new URLSearchParams({
                 search: searchQuery,
                 genre: genreId,
@@ -99,16 +92,11 @@
                 page: page
             });
 
-            // The URL points to the `filter_books` API view you created
             const url = `{% url 'filter_books' %}?${params.toString()}`;
 
             try {
-                // Use the Fetch API to make an asynchronous request to the server
                 const response = await fetch(url);
-                // Parse the JSON response, which contains the new HTML
                 const data = await response.json();
-
-                // Replace the content of the grid and pagination containers with the new HTML
 
                 bookGridContainer.innerHTML = data.books_html;
                 paginationContainer.innerHTML = data.pagination_html;
@@ -118,34 +106,25 @@
             }
         }
 
-        // --- EVENT LISTENERS ---
 
-        // 1. Listen for typing in the search bar
         searchInput.addEventListener('input', () => {
-            // Clear any existing timer
             clearTimeout(debounceTimeout);
-            // Set a new timer. The fetchBooks function will only run after the user stops typing for 300ms.
             debounceTimeout = setTimeout(() => {
-                fetchBooks(1); // Always reset to page 1 for a new search
+                fetchBooks(1);
             }, 300);
         });
 
-        // 2. Listen for a change in the dropdown filters
         genreFilter.addEventListener('change', () => fetchBooks(1));
         languageFilter.addEventListener('change', () => fetchBooks(1));
 
-        // 3. Listen for clicks on pagination links using event delegation
         paginationContainer.addEventListener('click', function (event) {
-            // Check if the clicked element has the 'pagination-link' class
             if (event.target.closest('.pagination-link')) {
-                event.preventDefault(); // Stop the browser from doing a full page reload
+                event.preventDefault();
 
-                // Get the page number from the link's href attribute
                 const link = event.target.closest('.pagination-link');
                 const url = new URL(link.href);
                 const page = url.searchParams.get('page');
 
-                // Fetch the books for that specific page if a page number is found
                 if (page) {
                     fetchBooks(page);
                 }

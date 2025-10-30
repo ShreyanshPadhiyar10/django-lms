@@ -265,7 +265,6 @@
     </main>
 </div>
 
-<!-- JavaScript for Tab Switching -->
 <script>
     function switchTab(tabName) {
         const issueForm = document.getElementById("issue-form");
@@ -274,11 +273,9 @@
         const returnTab = document.getElementById("return-tab");
 
         if (tabName === "issue") {
-            // Show Issue Form
             issueForm.classList.remove("hidden");
             returnForm.classList.add("hidden");
 
-            // Style Tabs
             issueTab.classList.remove("text-gray-600", "hover:bg-gray-100");
             issueTab.classList.add(
                 "bg-blue-600",
@@ -295,11 +292,9 @@
             );
             returnTab.classList.add("text-gray-600", "hover:bg-gray-100");
         } else if (tabName === "return") {
-            // Show Return Form
             issueForm.classList.add("hidden");
             returnForm.classList.remove("hidden");
 
-            // Style Tabs
             returnTab.classList.remove("text-gray-600", "hover:bg-gray-100");
             returnTab.classList.add(
                 "bg-blue-600",
@@ -318,7 +313,6 @@
         }
     }
 
-    // Initialize the Issue tab as active when the page loads
     window.onload = function () {
         switchTab("issue");
     };

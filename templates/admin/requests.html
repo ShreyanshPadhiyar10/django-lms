@@ -5,12 +5,10 @@
 {% block content %}
 
 <div class="flex-1 ml-0 md:ml-64 main-content-scroll bg-gray-50">
-    <!-- Top Nav/Header for Mobile (Important for responsiveness) -->
     <header
         class="md:hidden sticky top-0 bg-white shadow-md p-4 flex justify-between items-center z-10"
     >
         <button class="text-gray-600 hover:text-blue-700">
-            <!-- Menu Icon -->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -29,7 +27,6 @@
         </button>
         <span class="text-lg font-semibold text-gray-900">Library Admin</span>
         <button class="text-gray-600 hover:text-blue-700">
-            <!-- User Icon -->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -47,14 +44,11 @@
         </button>
     </header>
 
-    <!-- Main Content Padding -->
     <main class="p-4 md:p-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-1">Book Requests</h1>
         <p class="text-gray-500 mb-8">Manage student book requests</p>
 
-        <!-- Tab Controls (Pending / Approved / Rejected) -->
         <div class="flex flex-wrap gap-4 mb-8">
-            <!-- Tab 1: Pending -->
             <button
                 id="pending-tab"
                 onclick="switchTab('pending')"
@@ -62,7 +56,6 @@
             >
                 Pending (3)
             </button>
-            <!-- Tab 2: Approved -->
             <button
                 id="approved-tab"
                 onclick="switchTab('approved')"
@@ -70,7 +63,6 @@
             >
                 Approved (2)
             </button>
-            <!-- Tab 3: Rejected -->
             <button
                 id="rejected-tab"
                 onclick="switchTab('rejected')"
@@ -80,16 +72,11 @@
             </button>
         </div>
 
-        <!-- Request List Container -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- ---------------------------------------------------- -->
-            <!-- 1. PENDING REQUESTS (Initially Active) -->
-            <!-- ---------------------------------------------------- -->
             <div
                 id="pending-list"
                 class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 active-list"
             >
-                <!-- Pending Request Card 1 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
                 >
@@ -132,7 +119,6 @@
                     </div>
                 </div>
 
-                <!-- Pending Request Card 2 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
                 >
@@ -175,7 +161,6 @@
                     </div>
                 </div>
 
-                <!-- Pending Request Card 3 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
                 >
@@ -216,15 +201,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ---------------------------------------------------- -->
-            <!-- 2. APPROVED REQUESTS (Initially Hidden) -->
-            <!-- ---------------------------------------------------- -->
             <div
                 id="approved-list"
                 class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"
             >
-                <!-- Approved Request Card 1 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
                 >
@@ -260,7 +240,6 @@
                     </div>
                 </div>
 
-                <!-- Approved Request Card 2 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
                 >
@@ -299,14 +278,10 @@
                 </div>
             </div>
 
-            <!-- ---------------------------------------------------- -->
-            <!-- 3. REJECTED REQUESTS (Initially Hidden) -->
-            <!-- ---------------------------------------------------- -->
             <div
                 id="rejected-list"
                 class="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"
             >
-                <!-- Rejected Request Card 1 -->
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 opacity-70"
                 >
@@ -348,7 +323,6 @@
     </main>
 </div>
 
-<!-- JavaScript for Tab Switching -->
 <script>
     function switchTab(tabName) {
         const lists = {
@@ -362,10 +336,8 @@
             rejected: document.getElementById("rejected-tab"),
         };
 
-        // Loop through all lists and tabs
         for (const key in lists) {
             if (key === tabName) {
-                // Activate the selected tab and list
                 lists[key].classList.remove("hidden");
                 tabs[key].classList.remove(
                     "text-gray-600",
@@ -378,7 +350,6 @@
                     "hover:bg-blue-700"
                 );
             } else {
-                // Deactivate others
                 lists[key].classList.add("hidden");
                 tabs[key].classList.remove(
                     "bg-blue-600",
@@ -391,9 +362,7 @@
         }
     }
 
-    // Initialize the Pending tab as active when the page loads
     window.onload = function () {
-        // Check if a list is present before switching (prevents errors on base page)
         if (document.getElementById("pending-list")) {
             switchTab("pending");
         }
