@@ -27,6 +27,15 @@
                         View Details
                     </a>
                 </button>
+                
+                {% if request.path == '/user/browse' %}
+                <button
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">
+                        Request Book
+                        
+                </button>
+                {% endif %}
+
             </div>
         </div>
     </div>

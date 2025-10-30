@@ -1,4 +1,4 @@
-{% include "index.html" %} 
+{% include "index.html" %}
 
 {% block content %}
 
@@ -6,19 +6,11 @@
     <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
         <ol class="list-none p-0 inline-flex">
             <li class="flex items-center">
-                <a
-                    href="#"
-                    class="text-blue-600 hover:text-blue-800 transition duration-150"
-                    >Home</a
-                >
-                <svg
-                    class="fill-current w-3 h-3 mx-2 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                >
+                <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
+                <svg class="fill-current w-3 h-3 mx-2 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20">
                     <path
-                        d="M7.293 14.707l3.293-3.293-3.293-3.293a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414z"
-                    />
+                        d="M7.293 14.707l3.293-3.293-3.293-3.293a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414z" />
                 </svg>
             </li>
             <li class="text-gray-700 font-medium">Fiction</li>
@@ -30,223 +22,110 @@
         <p class="text-xl text-gray-600">Explore 4 books in this category</p>
     </header>
 
-    <h2 class="text-lg font-semibold text-gray-700 mb-4">Subcategories</h2>
-    <div class="flex flex-wrap gap-3 mb-8">
-        <button
-            id="tab-all"
-            onclick="filterSubcategory('all')"
-            class="subcategory-tab py-2 px-4 text-sm font-semibold rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 transition duration-200"
-        >
-            All
-        </button>
-        <button
-            id="tab-literary"
-            onclick="filterSubcategory('literary')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Literary Fiction
-        </button>
-        <button
-            id="tab-contemporary"
-            onclick="filterSubcategory('contemporary')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Contemporary Fiction
-        </button>
-        <button
-            id="tab-historical"
-            onclick="filterSubcategory('historical')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Historical Fiction
-        </button>
-        <button
-            id="tab-mystery"
-            onclick="filterSubcategory('mystery')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Mystery
-        </button>
-        <button
-            id="tab-thriller"
-            onclick="filterSubcategory('thriller')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Thriller
-        </button>
-        <button
-            id="tab-romance"
-            onclick="filterSubcategory('romance')"
-            class="subcategory-tab py-2 px-4 text-sm font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200"
-        >
-            Romance
-        </button>
-    </div>
-
     <div class="flex flex-col md:flex-row gap-4 mb-10">
         <div class="relative flex-1">
-            <input
-                type="search"
-                placeholder="Search within category..."
-                class="w-full p-3 pl-10 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150"
-            />
-            <svg
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-            </svg>
-        </div>
-        <div class="w-full md:w-48">
-            <select
-                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150"
-            >
-                <option>Title (A-Z)</option>
-                <option>Title (Z-A)</option>
-                <option>Newest First</option>
-                <option>Author</option>
-            </select>
+            <form id="filter-form" class="flex flex-col md:flex-row gap-4 mb-10 items-center text-black">
+                <div class="relative flex-grow w-full md:w-auto">
+                    <input type="text" id="search-input" name="search" placeholder="Search books by keyword..."
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </div>
+
+                <div class="flex gap-4 w-full md:w-auto">
+                    <select id="genre-filter" name="genre"
+                        class="py-3 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm w-full">
+                        <option value="">All Genres</option>
+                        {% for genre in all_genres %}
+                        <option value="{{ genre.pk }}">{{ genre.genre_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="language-filter" name="language"
+                        class="py-3 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm w-full">
+                        <option value="">All Languages</option>
+                        {% for lang in all_languages %}
+                        <option value="{{ lang.pk }}">{{ lang.language_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
         </div>
     </div>
-
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-                {% for book in books_page %}
-                <div
-                    class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transition-transform duration-300 ease-in-out hover:-translate-y-2">
-
-                    <div class="relative">
-                        {% if book.available_copies > 0 %}
-                        <span
-                            class="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
-                        {% else %}
-                        <span
-                            class="absolute top-2 right-2 bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">Unavailable</span>
-                        {% endif %}
-                        <img class="w-full h-64 object-cover"
-                            src="https://placehold.co/400x600/1F2937/FFFFFF?text={{ book.title|urlencode }}"
-                            alt="Cover of {{ book.title }}">
-                    </div>
-
-                    <div class="p-5 flex flex-col flex-grow">
-
-                        <h3 class="text-xl font-bold text-gray-900 truncate">{{ book.title }}</h3>
-                        <p class="text-sm text-gray-600 mb-3">by {{ book.author }}</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            {% for genre in book.genre.all %}
-                            <span class="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">{{ genre.genre_name }}</span>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="flex-grow"></div>
-                        <div class="mt-4 pt-4 border-t border-gray-200">
-                            <p class="text-sm text-gray-700 font-medium mb-3">
-                                Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
-                            </p>
-                        </div>
-                            <div class="flex gap-3 mt-3">
-                            <button
-                                class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150"
-                            >
-                            <a href="{% url 'details' book.book_id %}">
-                                View Details
-                            </a>
-                            </button>
-                            <button
-                                class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                            >
-                                Request Book
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-
-            </div>
-
-            <div class="flex justify-center items-center mt-10 space-x-2">
-                {% if books_page.has_previous %}
-                <a href="?page={{ books_page.previous_page_number }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
-                    &laquo; Previous
-                </a>
-                {% endif %}
-
-                {% for num in books_page.paginator.page_range %}
-                {% if books_page.number == num %}
-                <a href="#"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg z-10">
-                    {{ num }}
-                </a>
-                {% else %}
-                <a href="?page={{ num }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
-                    {{ num }}
-                </a>
-                {% endif %}
-                {% endfor %}
-
-                {% if books_page.has_next %}
-                <a href="?page={{ books_page.next_page_number }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
-                    Next &raquo;
-                </a>
-                {% endif %}
-            </div>
+    <div class="flex justify-center items-center mt-10 space-x-2">
+        <div id="book-grid-container">
+            {% include "partials/book_grid_content.html" %}
         </div>
-
-    <script>
-        function filterSubcategory(category) {
-            document.querySelectorAll(".subcategory-tab").forEach((btn) => {
-                btn.classList.remove(
-                    "bg-blue-600",
-                    "text-white",
-                    "font-semibold"
-                );
-                btn.classList.add(
-                    "bg-gray-100",
-                    "text-gray-700",
-                    "font-medium"
-                );
-            });
-
-            const activeTabButton = document.getElementById(`tab-${category}`);
-            if (activeTabButton) {
-                activeTabButton.classList.add(
-                    "bg-blue-600",
-                    "text-white",
-                    "font-semibold"
-                );
-                activeTabButton.classList.remove(
-                    "bg-gray-100",
-                    "text-gray-700",
-                    "font-medium"
-                );
-            }
-
-            document.querySelectorAll(".book-card").forEach((card) => {
-                if (
-                    category === "all" ||
-                    card.classList.contains(`subcategory-${category}`)
-                ) {
-                    card.classList.remove("hidden");
-                } else {
-                    card.classList.add("hidden");
-                }
-            });
-        }
-
-        window.onload = () => filterSubcategory("all");
-    </script>
+    </div>
+    </div>
 </main>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const genreFilter = document.getElementById('genre-filter');
+        const languageFilter = document.getElementById('language-filter');
+        const bookGrid = document.getElementById('book-grid');
+        const paginationContainer = document.getElementById('pagination-container');
+        const bookGridContainer = document.getElementById('book-grid-container');
+
+        let debounceTimeout;
+        async function fetchBooks(page = 1) {
+            const searchQuery = searchInput.value;
+            const genreId = genreFilter.value;
+            const languageId = languageFilter.value;
+
+            const params = new URLSearchParams({
+                search: searchQuery,
+                genre: genreId,
+                language: languageId,
+                page: page
+            });
+
+            const url = `{% url 'filter_books' %}?${params.toString()}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                bookGridContainer.innerHTML = data.books_html;
+                paginationContainer.innerHTML = data.pagination_html;
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                bookGrid.innerHTML = '<p class="col-span-full text-center text-red-500">An error occurred while searching. Please try again.</p>';
+            }
+        }
+
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                fetchBooks(1);
+            }, 300);
+        });
+
+        genreFilter.addEventListener('change', () => fetchBooks(1));
+        languageFilter.addEventListener('change', () => fetchBooks(1));
+
+        paginationContainer.addEventListener('click', function (event) {
+            if (event.target.closest('.pagination-link')) {
+                event.preventDefault();
+
+                const link = event.target.closest('.pagination-link');
+                const url = new URL(link.href);
+                const page = url.searchParams.get('page');
+
+                if (page) {
+                    fetchBooks(page);
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

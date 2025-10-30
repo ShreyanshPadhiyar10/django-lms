@@ -143,6 +143,8 @@ def browse(request):
     
     context = {
         'books_page': books_page_obj,
+        'all_genres': Genre.objects.all().order_by('genre_name'),
+        'all_languages': Language.objects.all().order_by('language_name'),
     }
     return render(request, 'users/browse.html', context)
 
