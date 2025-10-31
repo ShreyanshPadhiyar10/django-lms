@@ -59,10 +59,11 @@
 
             <form
                 id="access-form"
-                onsubmit="handleSubmit(event)"
                 method="POST"
-                action="/student/login"
+                action="{% url 'user_login' %}"
             >
+                {% csrf_token %}
+
                 <div class="mb-4">
                     <label
                         for="username"
