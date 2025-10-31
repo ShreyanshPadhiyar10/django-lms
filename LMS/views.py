@@ -1,6 +1,7 @@
 from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language, User
+from library_db.models import Book, Genre, Language, User, Admin
 from django.db.models import Q
+from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.cache import cache
@@ -159,6 +160,29 @@ def details(request, book_id):
     return render(request, 'details/details.html', {'book': book})
 
 def user_login(request):
+    if request.method == 'POST':
+        identifier = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if not (identifier and password):
+            messages.error(request, "Please enter username and password.")
+            return render(request, 'auth/user_login.html')
+        
+        try:
+            user = User.objects.get(Q(email__iexact=identifier) | Q(phone__iexact=identifier))
+        except User.DoesNotExist:
+            messages.error(request, "Invalid Credentials. Please try again.")
+            return render(request, 'auth/user_login.html')
+        
+        if password == user.password:
+            request.session['user_id'] = user.user_id
+            request.session['user_name'] = user.name
+            request.session.set_expiry(60 * 60 * 24 * 7)  # optional
+            messages.success(request, f"Welcome back, {user.name}!")
+            return redirect('userDashboard')
+        else:
+            messages.error(request, "Invalid credentials.")
+            return render(request, 'auth/user_login.html')
     return render(request, 'auth/user_login.html')
 
 def user_signup(request):
@@ -170,12 +194,12 @@ def user_signup(request):
         password = request.POST.get('password') 
 
         if not (name and phone and email and password):
-            error_message = "All fields are required."
-            return render(request, 'auth/user_signup.html', {'error_message': error_message})
+            messages.error(request, "Please fill all required fields.")
+            return render(request, 'auth/user_signup.html')
         
         if User.objects.filter(Q(email = email) | Q(phone = phone)).exists():
-            error_message = "A user with this email or phone number already exists."
-            return render(request, 'auth/user_signup.html', {'error_message': error_message})
+            messages.error(request, "User with this email or phone already exists.")
+            return render(request, 'auth/user_signup.html')
         
         user = User.objects.create(
             name = name,
@@ -184,9 +208,37 @@ def user_signup(request):
             password = password
         )
 
+        request.session['user_id'] = user.user_id
+        request.session['user_name'] = user.name
+        request.session.set_expiry(60 * 60 * 24 * 7)
+
+
         messages.success(request, "Registration successful. You are now logged in.")
         return redirect('userDashboard')
     return render(request, 'auth/user_signup.html')
 
 def admin_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if not (email and password):
+            messages.error(request, "Please enter both email and password")
+            return render(request, 'auth/admin_login.html')
+        
+        try:
+            admin = Admin.objects.get(email=email)
+        except Admin.DoesNotExist:
+            messages.error(request, "Invalid Credentials. Please try again.")
+            return render(request, 'auth/admin_login.html')
+        
+        if password == admin.password:
+            request.session['admin_id'] = admin.admin_id
+            request.session['admin_name'] = admin.name
+            request.session.set_expiry(60 * 60 * 24 * 7)
+            messages.success(request, f"Welcome back, {admin.name}!")
+            return redirect('dashboard')
+        else:
+            messages.error(request, "Invalid credentials.")
+            return render(request, 'auth/admin_login.html')
     return render(request, 'auth/admin_login.html')
