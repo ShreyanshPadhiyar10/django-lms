@@ -39,7 +39,7 @@ def home(request):
     return redirect('user_login')
 
 @admin_login_required
-def dashboard(request):
+def admin_dashboard(request):
     total_books = Book.objects.count()
     total_users = User.objects.count()
 
@@ -50,7 +50,7 @@ def dashboard(request):
     return render(request, 'admin/dashboard.html', context)
 
 @admin_login_required
-def books(request):
+def admin_books(request):
     if 'admin_id' not in request.session:
         return redirect('admin_login')
 
@@ -124,7 +124,7 @@ def filter_books(request):
     return JsonResponse({'books_html': books_html})
 
 @admin_login_required
-def add_book(request):
+def admin_add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         author = request.POST.get('author')
@@ -158,27 +158,27 @@ def add_book(request):
     return render(request, 'admin/add_book.html')
 
 @admin_login_required
-def issue_receive(request):
+def admin_issue_receive(request):
     return render(request, 'admin/issue_receive.html')
 
 @admin_login_required
-def users(request):
+def admin_users(request):
     return render(request, 'admin/users.html')
 
 @admin_login_required
-def requests(request):
+def admin_requests(request):
     return render(request, 'admin/requests.html')
 
 @admin_login_required
-def settings(request):
+def admin_settings(request):
     return render(request, 'admin/settings.html')
 
 @user_login_required
-def userDashboard(request):
+def user_dashboard(request):
     return render(request, 'users/dashboard.html')
 
 @user_login_required
-def browse(request):
+def user_browse(request):
     if 'user_id' not in request.session:
         return redirect('user_login')
     
@@ -199,20 +199,20 @@ def browse(request):
     return render(request, 'users/browse.html', context)
 
 @user_login_required
-def myBooks(request):
+def user_my_books(request):
     return render(request, 'users/books.html')
 
 @user_login_required
-def myRequests(request):
+def user_my_requests(request):
     return render(request, 'users/requests.html')
 
 @admin_login_required
-def details_admin(request, book_id):
+def admin_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'admin/book_details.html', {'book': book})
 
 @user_login_required
-def details_user(request, book_id):
+def user_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'users/book_details.html', {'book': book})
 
@@ -236,7 +236,7 @@ def user_login(request):
             request.session['user_name'] = user.name
             request.session.set_expiry(60 * 60 * 24 * 7)  # optional
             messages.success(request, f"Welcome back, {user.name}!")
-            return redirect('userDashboard')
+            return redirect('user_dashboard')
         else:
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/user_login.html')
@@ -271,7 +271,7 @@ def user_signup(request):
 
 
         messages.success(request, "Registration successful. You are now logged in.")
-        return redirect('userDashboard')
+        return redirect('user_dashboard')
     return render(request, 'auth/user_signup.html')
 
 def admin_login(request):
@@ -294,7 +294,7 @@ def admin_login(request):
             request.session['admin_name'] = admin.name
             request.session.set_expiry(60 * 60 * 24 * 7)
             messages.success(request, f"Welcome back, {admin.name}!")
-            return redirect('dashboard')
+            return redirect('admin/dashboard')
         else:
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/admin_login.html')

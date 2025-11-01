@@ -30,7 +30,7 @@
 
             <div class="flex gap-3 mt-3">
                 {% if user_type == 'admin' %}
-                    <a href="{% url 'details_admin' book.book_id %}"
+                    <a href="{% url 'admin_book_details' book.book_id %}"
                         class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
                         View Details
                     </a>
@@ -41,7 +41,7 @@
                     </button>
 
                 {% else %}
-                    <a href="{% url 'details_user' book.book_id %}"
+                    <a href="{% url 'user_book_details' book.book_id %}"
                         class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
                         View Details
                     </a>
