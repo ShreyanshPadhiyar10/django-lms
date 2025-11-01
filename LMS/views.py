@@ -43,10 +43,20 @@ def home(request):
 
 @admin_login_required
 def dashboard(request):
-    return render(request, 'admin/dashboard.html')
+    total_books = Book.objects.count()
+    total_users = User.objects.count()
+
+    context = {
+        'total_books': total_books,
+        'total_users': total_users,
+    }
+    return render(request, 'admin/dashboard.html', context)
 
 @admin_login_required
 def books(request):
+    if 'admin_id' not in request.session:
+        return redirect('admin_login')
+
     all_books_list = Book.objects.all().order_by('title')
     
     paginator = Paginator(all_books_list, 8) 
@@ -59,6 +69,7 @@ def books(request):
         'books_page': books_page_obj,
         'all_genres': Genre.objects.all().order_by('genre_name'),
         'all_languages': Language.objects.all().order_by('language_name'),
+        'user_type': 'admin',
     }
     return render(request, 'admin/books.html', context)
 
@@ -170,6 +181,9 @@ def userDashboard(request):
 
 @user_login_required
 def browse(request):
+    if 'user_id' not in request.session:
+        return redirect('user_login')
+    
     all_books_list = Book.objects.all().order_by('title')
     
     paginator = Paginator(all_books_list, 8) 
@@ -182,6 +196,7 @@ def browse(request):
         'books_page': books_page_obj,
         'all_genres': Genre.objects.all().order_by('genre_name'),
         'all_languages': Language.objects.all().order_by('language_name'),
+        'user_type': 'user',
     }
     return render(request, 'users/browse.html', context)
 
@@ -265,10 +280,15 @@ def view_waiting_list(request):
 def myRequests(request):
     return render(request, 'users/requests.html')
 
-@login_required_any
-def details(request, book_id):
+@admin_login_required
+def details_admin(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
-    return render(request, 'details/details.html', {'book': book})
+    return render(request, 'admin/book_details.html', {'book': book})
+
+@user_login_required
+def details_user(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
+    return render(request, 'users/book_details.html', {'book': book})
 
 def user_login(request):
     if request.method == 'POST':
