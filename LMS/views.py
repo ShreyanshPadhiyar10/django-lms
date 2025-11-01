@@ -1,5 +1,7 @@
 from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language, User, Admin
+from library_db.models import Book, Genre, Language, User, Admin, IssueRecord, WaitingList
+from datetime import date, timedelta
+from django.db.models import Max
 from django.db.models import Q
 from functools import wraps
 from django.contrib import messages
@@ -9,6 +11,7 @@ from django.core.cache import cache
 from functools import reduce
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 import pickle
 
 def user_login_required(view_func):
@@ -81,7 +84,6 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
-@admin_login_required
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -186,6 +188,78 @@ def browse(request):
 @user_login_required
 def myBooks(request):
     return render(request, 'users/books.html')
+
+@user_login_required
+def request_book(request, book_id):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+    book = get_object_or_404(Book, pk=book_id)
+    user = request.user
+    print(user)
+
+    # 1. Check if user already has this book issued
+    if IssueRecord.objects.filter(book=book, user=user, status__in=['issued', 'overdue']).exists():
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'You already have this book issued.'
+        }, status=400)
+
+    # 2. Check if user is already on the waiting list
+    if WaitingList.objects.filter(book=book, user=user).exists():
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'You are already on the waiting list for this book.'
+        }, status=400)
+
+    # 3. Process the request
+    if book.available_copies > 0:
+        # --- Book is Available: Create an IssueRecord ---
+        book.available_copies -= 1
+        book.save()
+
+        IssueRecord.objects.create(
+            user=user,
+            book=book,
+            issue_date=date.today(),
+            due_date=date.today() + timedelta(days=14), # 2-week loan period
+            status='issued'
+        )
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Book issued successfully! It has been added to your profile.',
+            'new_copies': book.available_copies
+        })
+    else:
+        # --- Book is Unavailable: Add to WaitingList (Priority Queue) ---
+        
+        # Find the next position in the queue for this specific book
+        current_max_pos = WaitingList.objects.filter(book=book).aggregate(Max('position'))
+        new_pos = (current_max_pos['position__max'] or 0) + 1
+        
+        WaitingList.objects.create(
+            user=user,
+            book=book,
+            position=new_pos
+        )
+        
+        return JsonResponse({
+            'status': 'waiting', 
+            'message': 'This book is unavailable. You have been added to the waiting list.'
+        })
+
+@admin_login_required
+def view_waiting_list(request):
+    """
+    Shows the priority queue, grouped by book and ordered by position.
+    """
+    priority_queue = WaitingList.objects.select_related('user', 'book').order_by('book__title', 'position')
+    
+    context = {
+        'waiting_list': priority_queue
+    }
+    return render(request, 'admin/waiting_list.html', context)
 
 @user_login_required
 def myRequests(request):

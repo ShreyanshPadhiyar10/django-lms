@@ -63,6 +63,33 @@
     </div>
 </main>
 
+<div id="requestModal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    style="display: none;">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Confirm Your Request</h2>
+        <p class="text-gray-700 mb-2">Are you sure you want to request the following book?</p>
+
+        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+            <h3 id="modalBookTitle" class="text-lg font-semibold text-gray-900"></h3>
+            <p id="modalBookAuthor" class="text-sm text-gray-600"></p>
+        </div>
+
+        <div id="modalMessage" class="hidden text-sm font-medium mb-4"></div>
+
+        <div class="flex justify-end space-x-3">
+            <button id="modalCancelBtn"
+                class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                Cancel
+            </button>
+            <button id="modalConfirmBtn" data-book-id=""
+                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                Confirm Request
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -115,14 +142,96 @@
             const paginationLink = event.target.closest('.pagination-link');
 
             if (paginationLink) {
-                event.preventDefault(); 
+                event.preventDefault();
 
                 const url = new URL(paginationLink.href);
                 const page = url.searchParams.get('page');
 
                 if (page) {
-                    fetchBooks(page); 
+                    fetchBooks(page);
                 }
+            }
+        });
+
+
+        const modal = document.getElementById('requestModal');
+        const modalTitle = document.getElementById('modalBookTitle');
+        const modalAuthor = document.getElementById('modalBookAuthor');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const modalMessage = document.getElementById('modalMessage');
+        const csrfToken = '{{ csrf_token }}'; // Get the CSRF token
+
+        // Use event delegation for the "Request Book" buttons
+        bookGridContainer.addEventListener('click', function (event) {
+            const requestBtn = event.target.closest('.request-book-btn');
+            if (!requestBtn) return;
+
+            event.preventDefault();
+
+            // Get book details from data attributes
+            const bookId = requestBtn.dataset.bookId;
+            const bookTitle = requestBtn.dataset.bookTitle;
+            const bookAuthor = requestBtn.dataset.bookAuthor;
+
+            // Populate and show the modal
+            modalTitle.textContent = bookTitle;
+            modalAuthor.textContent = `by ${bookAuthor}`;
+            modalConfirmBtn.dataset.bookId = bookId;
+
+            // Reset modal state
+            modalMessage.textContent = '';
+            modalMessage.className = 'hidden text-sm font-medium mb-4';
+            modalConfirmBtn.disabled = false;
+            modalConfirmBtn.textContent = 'Confirm Request';
+
+            modal.style.display = 'flex';
+        });
+
+        // Hide modal on cancel
+        modalCancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Handle the "Confirm" click
+        modalConfirmBtn.addEventListener('click', async function () {
+            const bookId = this.dataset.bookId;
+            this.disabled = true;
+            this.textContent = 'Processing...';
+
+            try {
+                const response = await fetch(`/api/request-book/${bookId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success (Issued or Waiting)
+                    modalMessage.textContent = data.message;
+                    modalMessage.className = data.status === 'waiting'
+                        ? 'block text-sm font-medium mb-4 text-yellow-700'
+                        : 'block text-sm font-medium mb-4 text-green-700';
+
+                    // If it was issued, update the copy count on the main page
+                    if (data.status === 'success') {
+                        const copiesText = document.getElementById(`copies-${bookId}`);
+                        if (copiesText) {
+                            copiesText.textContent = copiesText.textContent.replace(/(\d+)\s\//, `${data.new_copies} /`);
+                        }
+                    }
+                } else {
+                    // Error (e.g., already requested)
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                modalMessage.textContent = error.message || 'An unknown error occurred.';
+                modalMessage.className = 'block text-sm font-medium mb-4 text-red-700';
             }
         });
     });
