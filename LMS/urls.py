@@ -36,7 +36,10 @@ urlpatterns = [
     path('user/browse', views.browse, name='browse'),
     path('book/<int:book_id>/', views.details, name='details'),
 
-    path('user_login', views.user_login, name='user_login'),
-    path('user_signup', views.user_signup, name='user_signup'),
+    path('user/login', views.user_login, name='user_login'),
+    path('user/signup', views.user_signup, name='user_signup'),
     path('admin_login', views.admin_login, name='admin_login'),
+
+    path('user/logout', views.user_logout, name='user_logout'),
+    path('admin_logout', views.admin_logout, name='admin_logout'),
 ]

@@ -1,8 +1,9 @@
 from django.shortcuts import render , redirect, get_object_or_404
 from library_db.models import Book, Genre, Language, User, Admin
 from django.db.models import Q
-from django.contrib.auth.hashers import check_password
+from functools import wraps
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.core.paginator import Paginator
 from django.core.cache import cache
 from functools import reduce
@@ -10,12 +11,38 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 import pickle
 
-def home(request):
-    return render(request, 'admin/dashboard.html')
+def user_login_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('user_id'):
+            return redirect('user_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
+def admin_login_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('admin_id'):
+            return redirect('admin_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+def login_required_any(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not (request.session.get('user_id') or request.session.get('admin_id')):
+            return redirect('user_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+def home(request):
+    return redirect('user_login')
+
+@admin_login_required
 def dashboard(request):
     return render(request, 'admin/dashboard.html')
 
+@admin_login_required
 def books(request):
     all_books_list = Book.objects.all().order_by('title')
     
@@ -54,6 +81,7 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
+@admin_login_required
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -84,7 +112,7 @@ def filter_books(request):
     books_html = render_to_string('partials/book_grid_content.html', {'books_page': page_obj})
     return JsonResponse({'books_html': books_html})
 
-
+@admin_login_required
 def add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -118,21 +146,27 @@ def add_book(request):
     
     return render(request, 'admin/add_book.html')
 
+@admin_login_required
 def issue_receive(request):
     return render(request, 'admin/issue_receive.html')
 
+@admin_login_required
 def users(request):
     return render(request, 'admin/users.html')
 
+@admin_login_required
 def requests(request):
     return render(request, 'admin/requests.html')
 
+@admin_login_required
 def settings(request):
     return render(request, 'admin/settings.html')
 
+@user_login_required
 def userDashboard(request):
     return render(request, 'users/dashboard.html')
 
+@user_login_required
 def browse(request):
     all_books_list = Book.objects.all().order_by('title')
     
@@ -149,23 +183,26 @@ def browse(request):
     }
     return render(request, 'users/browse.html', context)
 
+@user_login_required
 def myBooks(request):
     return render(request, 'users/books.html')
 
+@user_login_required
 def myRequests(request):
     return render(request, 'users/requests.html')
 
+@login_required_any
 def details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'details/details.html', {'book': book})
 
 def user_login(request):
     if request.method == 'POST':
-        identifier = request.POST.get('username')
+        identifier = request.POST.get('email')
         password = request.POST.get('password')
 
         if not (identifier and password):
-            messages.error(request, "Please enter username and password.")
+            messages.error(request, "Please enter email address and password.")
             return render(request, 'auth/user_login.html')
         
         try:
@@ -242,3 +279,12 @@ def admin_login(request):
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/admin_login.html')
     return render(request, 'auth/admin_login.html')
+
+def user_logout(request):
+    logout(request)  
+    return redirect('user_login')  
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login') 

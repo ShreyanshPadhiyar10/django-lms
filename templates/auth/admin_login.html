@@ -105,6 +105,14 @@
             </form>
         </div>
 
+        {% if messages %}
+        <div class="text-center mt-6 text-sm flex space-x-4">
+            {% for message in messages %}
+            <p class="text-red-500 font-medium">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="text-center mt-6 text-sm flex space-x-4">
             <a
                 href="{% url 'user_login' %}"
