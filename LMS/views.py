@@ -92,6 +92,7 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
+@login_required_any
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -152,10 +153,70 @@ def admin_add_book(request):
             genre_obj, _ = Genre.objects.get_or_create(genre_name=name)
             book.genre.add(genre_obj)
             
-        return redirect('books')
+        return redirect('admin_books')
     
     return render(request, 'admin/add_book.html')
 
+@admin_login_required
+def admin_edit_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        isbn = request.POST.get('isbn')
+        total_copies = request.POST.get('total_copies')
+        description = request.POST.get('description')
+        language_name = request.POST.get('language')
+
+        # Find or create language (same logic as add)
+        language_obj, _ = Language.objects.get_or_create(language_name=language_name.strip())
+
+        # Update the book fields
+        book.title = title
+        book.author = author
+        book.isbn = isbn
+        book.language = language_obj
+        book.description = description
+        book.total_copies = total_copies
+        book.available_copies = total_copies  # same logic as add
+        book.save()
+
+        # Update genres
+        genres_string = request.POST.get('genres')
+        genre_names = [name.strip() for name in genres_string.split(',') if name.strip()]
+
+        # Clear existing genres and re-add (so it works like "replace")
+        book.genre.clear()
+        for name in genre_names:
+            genre_obj, _ = Genre.objects.get_or_create(genre_name=name)
+            book.genre.add(genre_obj)
+
+        return redirect('admin_books')
+
+    # Pre-fill existing data for form
+    existing_genres = ', '.join([genre.genre_name for genre in book.genre.all()])
+
+    context = {
+        'book': book,
+        'prefill': {
+            'title': book.title,
+            'author': book.author,
+            'isbn': book.isbn or '',
+            'language': book.language.language_name if book.language else '',
+            'genres': existing_genres,
+            'total_copies': book.total_copies,
+            'description': book.description or '',
+        }
+    }
+
+    return render(request, 'admin/edit_book.html', context)
+
+def admin_delete_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    book.delete()
+    messages.success(request, f'"{book.title}" has been deleted successfully.')
+    return redirect('admin_books')
 @admin_login_required
 def admin_issue_receive(request):
     return render(request, 'admin/issue_receive.html')
@@ -299,11 +360,12 @@ def admin_login(request):
             return render(request, 'auth/admin_login.html')
     return render(request, 'auth/admin_login.html')
 
+@user_login_required
 def user_logout(request):
     logout(request)  
     return redirect('user_login')  
 
-
+@admin_login_required
 def admin_logout(request):
     logout(request)
     return redirect('admin_login') 

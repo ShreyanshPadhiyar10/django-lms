@@ -32,6 +32,8 @@ urlpatterns = [
     path('admin/users/', views.admin_users, name='admin_users'),
     path('admin_requests/', views.admin_requests, name='admin_requests'),
     path('admin/settings/', views.admin_settings, name='admin_settings'),
+    path('admin/books/edit/<int:book_id>/', views.admin_edit_book, name='admin_edit_book'),
+    path('admin/books/delete/<int:book_id>/', views.admin_delete_book, name='admin_delete_book'),
 
     #User URLs
     path('user/dashboard/', views.user_dashboard, name='user_dashboard'),

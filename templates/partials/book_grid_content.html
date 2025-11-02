@@ -35,10 +35,11 @@
                         View Details
                     </a>
 
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">
+                    <a href="{% url 'admin_edit_book' book.book_id %}"
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-center block">
                         Edit Book
-                    </button>
+                    </a>
+
 
                 {% else %}
                     <a href="{% url 'user_book_details' book.book_id %}"
