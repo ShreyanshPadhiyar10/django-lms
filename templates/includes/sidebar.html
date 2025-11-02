@@ -8,7 +8,7 @@
             class="p-6 flex items-center justify-between border-b border-gray-100"
         >
             <a
-                href="{% url 'dashboard' %}"
+                href="{% url 'admin_dashboard' %}"
                 class="flex-shrink-0 text-xl font-bold text-blue-600 flex items-center space-x-2 hover:opacity-90 transition duration-150"
             >
                 <span>MyLibrary</span>
@@ -26,7 +26,7 @@
             </h3>
 
             <a
-                href="{% url 'dashboard' %}"
+                href="{% url 'admin_dashboard' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'dashboard' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -46,7 +46,7 @@
                 <span>Dashboard</span>
             </a>
             <a
-                href="{% url 'books' %}"
+                href="{% url 'admin_books' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'books' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -69,7 +69,7 @@
                 <span>View Books</span>
             </a>
             <a
-                href="{% url 'add_book' %}"
+                href="{% url 'admin_add_book' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'add_book' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -89,7 +89,7 @@
                 <span>Add Book</span>
             </a>
             <a
-                href="{% url 'issue_receive' %}"
+                href="{% url 'admin_issue_receive' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'issue_return' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -111,7 +111,7 @@
                 <span>Issue / Receive</span>
             </a>
             <a
-                href="{% url 'requests' %}"
+                href="{% url 'admin_requests' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'requests' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -133,7 +133,7 @@
                 <span>View Requests</span>
             </a>
             <a
-                href="{% url 'users' %}"
+                href="{% url 'admin_users' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'users' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
@@ -155,7 +155,7 @@
                 <span>Users</span>
             </a>
             <a
-                href="{% url 'settings' %}"
+                href="{% url 'admin_settings' %}"
                 class="flex items-center space-x-3 p-3 rounded-xl transition duration-150 {% if request.resolver_match.url_name == 'settings' %} bg-blue-50 text-primary font-semibold {% else %} text-gray-600 hover:bg-gray-100 {% endif %}"
             >
                 <svg
