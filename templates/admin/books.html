@@ -118,16 +118,22 @@
         languageFilter.addEventListener('change', () => fetchBooks(1));
 
         paginationContainer.addEventListener('click', function (event) {
-            if (event.target.closest('.pagination-link')) {
-                event.preventDefault();
+            const link = event.target.closest('.pagination-link');
+            if (!link) return;
 
-                const link = event.target.closest('.pagination-link');
-                const url = new URL(link.href);
-                const page = url.searchParams.get('page');
+            event.preventDefault();
 
-                if (page) {
-                    fetchBooks(page);
-                }
+            const url = new URL(link.href);
+            const page = url.searchParams.get('page');
+
+            if (page) {
+                // Update URL in browser without reloading
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('page', page);
+                window.history.pushState({}, '', currentUrl);
+
+                // Fetch books for that page
+                fetchBooks(page);
             }
         });
     });

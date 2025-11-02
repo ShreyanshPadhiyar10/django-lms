@@ -92,7 +92,6 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
-@admin_login_required
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -294,7 +293,7 @@ def admin_login(request):
             request.session['admin_name'] = admin.name
             request.session.set_expiry(60 * 60 * 24 * 7)
             messages.success(request, f"Welcome back, {admin.name}!")
-            return redirect('admin/dashboard')
+            return redirect('admin_dashboard')
         else:
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/admin_login.html')
