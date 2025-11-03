@@ -23,23 +23,26 @@
             <div class="flex-grow"></div>
 
             <div class="mt-4 pt-4 border-t border-gray-200">
-                <p id="copies-{{ book.pk }}" class="text-sm text-gray-700 font-medium mb-3">Copies Available: {{ book.available_copies }} / {{ book.total_copies }}</p>
+                <p class="text-sm text-gray-700 font-medium mb-3">
+                    Copies Available: {{ book.available_copies }} / {{ book.total_copies }}
+                </p>
             </div>
 
             <div class="flex gap-3 mt-3">
                 {% if user_type == 'admin' %}
-                    <a href="{% url 'details_admin' book.book_id %}"
+                    <a href="{% url 'admin_book_details' book.book_id %}"
                         class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
                         View Details
                     </a>
 
-                    <button
-                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">
+                    <a href="{% url 'admin_edit_book' book.book_id %}"
+                        class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-center block">
                         Edit Book
-                    </button>
+                    </a>
+
 
                 {% else %}
-                    <a href="{% url 'details_user' book.book_id %}"
+                    <a href="{% url 'user_book_details' book.book_id %}"
                         class="flex-1 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-150 text-center">
                         View Details
                     </a>
@@ -47,7 +50,7 @@
                     <button
                         class="flex-1 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md">
                         Request Book
-                </button>
+                    </button>
                 {% endif %}
             </div>
         </div>
@@ -57,24 +60,52 @@
     {% endfor %}
 </div>
 
-<div id="pagination-container">
+<nav id="pagination-container" aria-label="Pagination">
     {% if books_page.paginator.num_pages > 1 %}
     <div class="flex justify-center items-center mt-10 space-x-2">
+
+        {# --- Previous Button --- #}
         {% if books_page.has_previous %}
-            <a href="?page={{ books_page.previous_page_number }}" class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">&laquo; Previous</a>
+            <a href="?page={{ books_page.previous_page_number }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                &laquo; Previous
+            </a>
         {% endif %}
 
+        {# --- Page Numbers --- #}
         {% for num in books_page.paginator.page_range %}
-            {% if books_page.number == num %}
-                <a href="?page={{ num }}" class="pagination-link px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg z-10">{{ num }}</a>
-            {% else %}
-                <a href="?page={{ num }}" class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">{{ num }}</a>
+            {% if num == books_page.number %}
+                <a href="?page={{ num }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg z-10">
+                    {{ num }}
+                </a>
+            {% elif num > books_page.number|add:'-3' and num < books_page.number|add:'3' %}
+                <a href="?page={{ num }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    {{ num }}
+                </a>
+            {% elif num == 1 %}
+                <a href="?page=1{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    1 ...
+                </a>
+            {% elif num == books_page.paginator.num_pages %}
+                <a href="?page={{ books_page.paginator.num_pages }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                    class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                    ... {{ books_page.paginator.num_pages }}
+                </a>
             {% endif %}
         {% endfor %}
 
+        {# --- Next Button --- #}
         {% if books_page.has_next %}
-            <a href="?page={{ books_page.next_page_number }}" class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">Next &raquo;</a>
+            <a href="?page={{ books_page.next_page_number }}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+                class="pagination-link px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                Next &raquo;
+            </a>
         {% endif %}
+
     </div>
     {% endif %}
-</div>
+</nav>
+

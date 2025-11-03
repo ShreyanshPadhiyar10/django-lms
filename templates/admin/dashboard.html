@@ -49,7 +49,7 @@
         <p class="text-gray-500 mb-8">Welcome back, Administrator</p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <a href="{% url 'books' %}">
+            <a href="{% url 'admin_books' %}">
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
                 >
@@ -83,7 +83,7 @@
                 </div>
             </a>
 
-            <a href="{% url 'users' %}">
+            <a href="{% url 'admin_users' %}">
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
                 >
@@ -120,7 +120,7 @@
                 </div>
             </a>
 
-            <a href="{% url 'requests' %}">
+            <a href="{% url 'admin_requests' %}">
                 <div
                     class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col justify-between hover:shadow-xl transition duration-150"
                 >
@@ -354,7 +354,7 @@
                 <div
                     class="bg-white p-5 rounded-xl shadow-lg border border-gray-100 space-y-3"
                 >
-                    <a href="{% url 'add_book' %}">
+                    <a href="{% url 'admin_add_book' %}">
                         <button
                             class="w-full flex items-center space-x-3 px-4 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg"
                         >
@@ -376,7 +376,7 @@
                         </button>
                     </a>
 
-                    <a href="{% url 'issue_receive' %}" class="px-4 py-3">
+                    <a href="{% url 'admin_issue_receive' %}" class="px-4 py-3">
                         <button
                             class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
                         >
@@ -401,7 +401,7 @@
                         </button>
                     </a>
 
-                    <a href="{% url 'users' %}" class="px-4 py-3">
+                    <a href="{% url 'admin_users' %}" class="px-4 py-3">
                         <button
                             class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
                         >
@@ -425,7 +425,7 @@
                         </button>
                     </a>
 
-                    <a href="{% url 'requests' %}">
+                    <a href="{% url 'admin_requests' %}">
                         <button
                             class="w-full flex items-center space-x-3 px-4 py-3 bg-gray-100 text-gray-800 font-medium rounded-lg hover:bg-gray-200 transition duration-150"
                         >

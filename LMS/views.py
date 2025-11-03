@@ -1,7 +1,5 @@
 from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language, User, Admin, IssueRecord, WaitingList
-from datetime import date, timedelta
-from django.db.models import Max
+from library_db.models import Book, Genre, Language, User, Admin
 from django.db.models import Q
 from functools import wraps
 from django.contrib import messages
@@ -11,7 +9,6 @@ from django.core.cache import cache
 from functools import reduce
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.contrib.auth.decorators import login_required
 import pickle
 
 def user_login_required(view_func):
@@ -42,7 +39,7 @@ def home(request):
     return redirect('user_login')
 
 @admin_login_required
-def dashboard(request):
+def admin_dashboard(request):
     total_books = Book.objects.count()
     total_users = User.objects.count()
 
@@ -53,7 +50,7 @@ def dashboard(request):
     return render(request, 'admin/dashboard.html', context)
 
 @admin_login_required
-def books(request):
+def admin_books(request):
     if 'admin_id' not in request.session:
         return redirect('admin_login')
 
@@ -95,6 +92,7 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
+@login_required_any
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -126,7 +124,7 @@ def filter_books(request):
     return JsonResponse({'books_html': books_html})
 
 @admin_login_required
-def add_book(request):
+def admin_add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         author = request.POST.get('author')
@@ -155,32 +153,92 @@ def add_book(request):
             genre_obj, _ = Genre.objects.get_or_create(genre_name=name)
             book.genre.add(genre_obj)
             
-        return redirect('books')
+        return redirect('admin_books')
     
     return render(request, 'admin/add_book.html')
 
 @admin_login_required
-def issue_receive(request):
+def admin_edit_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        isbn = request.POST.get('isbn')
+        total_copies = request.POST.get('total_copies')
+        description = request.POST.get('description')
+        language_name = request.POST.get('language')
+
+        # Find or create language (same logic as add)
+        language_obj, _ = Language.objects.get_or_create(language_name=language_name.strip())
+
+        # Update the book fields
+        book.title = title
+        book.author = author
+        book.isbn = isbn
+        book.language = language_obj
+        book.description = description
+        book.total_copies = total_copies
+        book.available_copies = total_copies  # same logic as add
+        book.save()
+
+        # Update genres
+        genres_string = request.POST.get('genres')
+        genre_names = [name.strip() for name in genres_string.split(',') if name.strip()]
+
+        # Clear existing genres and re-add (so it works like "replace")
+        book.genre.clear()
+        for name in genre_names:
+            genre_obj, _ = Genre.objects.get_or_create(genre_name=name)
+            book.genre.add(genre_obj)
+
+        return redirect('admin_books')
+
+    # Pre-fill existing data for form
+    existing_genres = ', '.join([genre.genre_name for genre in book.genre.all()])
+
+    context = {
+        'book': book,
+        'prefill': {
+            'title': book.title,
+            'author': book.author,
+            'isbn': book.isbn or '',
+            'language': book.language.language_name if book.language else '',
+            'genres': existing_genres,
+            'total_copies': book.total_copies,
+            'description': book.description or '',
+        }
+    }
+
+    return render(request, 'admin/edit_book.html', context)
+
+def admin_delete_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    book.delete()
+    messages.success(request, f'"{book.title}" has been deleted successfully.')
+    return redirect('admin_books')
+@admin_login_required
+def admin_issue_receive(request):
     return render(request, 'admin/issue_receive.html')
 
 @admin_login_required
-def users(request):
+def admin_users(request):
     return render(request, 'admin/users.html')
 
 @admin_login_required
-def requests(request):
+def admin_requests(request):
     return render(request, 'admin/requests.html')
 
 @admin_login_required
-def settings(request):
+def admin_settings(request):
     return render(request, 'admin/settings.html')
 
 @user_login_required
-def userDashboard(request):
+def user_dashboard(request):
     return render(request, 'users/dashboard.html')
 
 @user_login_required
-def browse(request):
+def user_browse(request):
     if 'user_id' not in request.session:
         return redirect('user_login')
     
@@ -201,20 +259,20 @@ def browse(request):
     return render(request, 'users/browse.html', context)
 
 @user_login_required
-def myBooks(request):
+def user_my_books(request):
     return render(request, 'users/books.html')
 
 @user_login_required
-def myRequests(request):
+def user_my_requests(request):
     return render(request, 'users/requests.html')
 
 @admin_login_required
-def details_admin(request, book_id):
+def admin_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'admin/book_details.html', {'book': book})
 
 @user_login_required
-def details_user(request, book_id):
+def user_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'users/book_details.html', {'book': book})
 
@@ -238,7 +296,7 @@ def user_login(request):
             request.session['user_name'] = user.name
             request.session.set_expiry(60 * 60 * 24 * 7)  # optional
             messages.success(request, f"Welcome back, {user.name}!")
-            return redirect('userDashboard')
+            return redirect('user_dashboard')
         else:
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/user_login.html')
@@ -273,7 +331,7 @@ def user_signup(request):
 
 
         messages.success(request, "Registration successful. You are now logged in.")
-        return redirect('userDashboard')
+        return redirect('user_dashboard')
     return render(request, 'auth/user_signup.html')
 
 def admin_login(request):
@@ -296,17 +354,18 @@ def admin_login(request):
             request.session['admin_name'] = admin.name
             request.session.set_expiry(60 * 60 * 24 * 7)
             messages.success(request, f"Welcome back, {admin.name}!")
-            return redirect('dashboard')
+            return redirect('admin_dashboard')
         else:
             messages.error(request, "Invalid credentials.")
             return render(request, 'auth/admin_login.html')
     return render(request, 'auth/admin_login.html')
 
+@user_login_required
 def user_logout(request):
     logout(request)  
     return redirect('user_login')  
 
-
+@admin_login_required
 def admin_logout(request):
     logout(request)
     return redirect('admin_login') 
