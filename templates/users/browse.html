@@ -3,25 +3,6 @@
 {% block content %}
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <nav class="text-sm text-gray-500 mb-2" aria-label="Breadcrumb">
-        <ol class="list-none p-0 inline-flex">
-            <li class="flex items-center">
-                <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Home</a>
-                <svg class="fill-current w-3 h-3 mx-2 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20">
-                    <path
-                        d="M7.293 14.707l3.293-3.293-3.293-3.293a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414z" />
-                </svg>
-            </li>
-            <li class="text-gray-700 font-medium">Fiction</li>
-        </ol>
-    </nav>
-
-    <header class="mb-8">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Fiction</h1>
-        <p class="text-xl text-gray-600">Explore 4 books in this category</p>
-    </header>
-
     <div class="flex flex-col md:flex-row gap-4 mb-10">
         <div class="relative flex-1">
             <form id="filter-form" class="flex flex-col md:flex-row gap-4 mb-10 items-center text-black">
@@ -63,33 +44,6 @@
     </div>
 </main>
 
-<div id="requestModal"
-    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
-    style="display: none;">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-4">Confirm Your Request</h2>
-        <p class="text-gray-700 mb-2">Are you sure you want to request the following book?</p>
-
-        <div class="bg-gray-50 p-4 rounded-lg mb-6">
-            <h3 id="modalBookTitle" class="text-lg font-semibold text-gray-900"></h3>
-            <p id="modalBookAuthor" class="text-sm text-gray-600"></p>
-        </div>
-
-        <div id="modalMessage" class="hidden text-sm font-medium mb-4"></div>
-
-        <div class="flex justify-end space-x-3">
-            <button id="modalCancelBtn"
-                class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                Cancel
-            </button>
-            <button id="modalConfirmBtn" data-book-id=""
-                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-                Confirm Request
-            </button>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block extra_js %}
@@ -98,6 +52,8 @@
         const searchInput = document.getElementById('search-input');
         const genreFilter = document.getElementById('genre-filter');
         const languageFilter = document.getElementById('language-filter');
+        const bookGrid = document.getElementById('book-grid');
+        const paginationContainer = document.getElementById('pagination-container');
         const bookGridContainer = document.getElementById('book-grid-container');
 
         let debounceTimeout;
@@ -120,9 +76,10 @@
                 const data = await response.json();
 
                 bookGridContainer.innerHTML = data.books_html;
+                paginationContainer.innerHTML = data.pagination_html;
             } catch (error) {
                 console.error('Error fetching books:', error);
-                bookGridContainer.innerHTML = '<p class="col-span-full text-center text-red-500">An error occurred while searching. Please try again.</p>';
+                bookGrid.innerHTML = '<p class="col-span-full text-center text-red-500">An error occurred while searching. Please try again.</p>';
             }
         }
 
@@ -137,103 +94,24 @@
         genreFilter.addEventListener('change', () => fetchBooks(1));
         languageFilter.addEventListener('change', () => fetchBooks(1));
 
-        document.addEventListener('click', function (event) {
-
-            const paginationLink = event.target.closest('.pagination-link');
-
-            if (paginationLink) {
-                event.preventDefault();
-
-                const url = new URL(paginationLink.href);
-                const page = url.searchParams.get('page');
-
-                if (page) {
-                    fetchBooks(page);
-                }
-            }
-        });
-
-
-        const modal = document.getElementById('requestModal');
-        const modalTitle = document.getElementById('modalBookTitle');
-        const modalAuthor = document.getElementById('modalBookAuthor');
-        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-        const modalCancelBtn = document.getElementById('modalCancelBtn');
-        const modalMessage = document.getElementById('modalMessage');
-        const csrfToken = '{{ csrf_token }}'; // Get the CSRF token
-
-        // Use event delegation for the "Request Book" buttons
-        bookGridContainer.addEventListener('click', function (event) {
-            const requestBtn = event.target.closest('.request-book-btn');
-            if (!requestBtn) return;
+        paginationContainer.addEventListener('click', function (event) {
+            const link = event.target.closest('.pagination-link');
+            if (!link) return;
 
             event.preventDefault();
 
-            // Get book details from data attributes
-            const bookId = requestBtn.dataset.bookId;
-            const bookTitle = requestBtn.dataset.bookTitle;
-            const bookAuthor = requestBtn.dataset.bookAuthor;
+            const url = new URL(link.href);
+            const page = url.searchParams.get('page');
 
-            // Populate and show the modal
-            modalTitle.textContent = bookTitle;
-            modalAuthor.textContent = `by ${bookAuthor}`;
-            modalConfirmBtn.dataset.bookId = bookId;
+            if (page) {
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('page', page);
+                window.history.pushState({}, '', currentUrl);
 
-            // Reset modal state
-            modalMessage.textContent = '';
-            modalMessage.className = 'hidden text-sm font-medium mb-4';
-            modalConfirmBtn.disabled = false;
-            modalConfirmBtn.textContent = 'Confirm Request';
-
-            modal.style.display = 'flex';
-        });
-
-        // Hide modal on cancel
-        modalCancelBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Handle the "Confirm" click
-        modalConfirmBtn.addEventListener('click', async function () {
-            const bookId = this.dataset.bookId;
-            this.disabled = true;
-            this.textContent = 'Processing...';
-
-            try {
-                const response = await fetch(`/api/request-book/${bookId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Success (Issued or Waiting)
-                    modalMessage.textContent = data.message;
-                    modalMessage.className = data.status === 'waiting'
-                        ? 'block text-sm font-medium mb-4 text-yellow-700'
-                        : 'block text-sm font-medium mb-4 text-green-700';
-
-                    // If it was issued, update the copy count on the main page
-                    if (data.status === 'success') {
-                        const copiesText = document.getElementById(`copies-${bookId}`);
-                        if (copiesText) {
-                            copiesText.textContent = copiesText.textContent.replace(/(\d+)\s\//, `${data.new_copies} /`);
-                        }
-                    }
-                } else {
-                    // Error (e.g., already requested)
-                    throw new Error(data.message);
-                }
-
-            } catch (error) {
-                modalMessage.textContent = error.message || 'An unknown error occurred.';
-                modalMessage.className = 'block text-sm font-medium mb-4 text-red-700';
+                fetchBooks(page);
             }
         });
-    });
+
+        });
 </script>
 {% endblock %}

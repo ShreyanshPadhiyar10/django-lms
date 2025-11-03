@@ -30,12 +30,6 @@ urlpatterns = [
     path('requests/', views.requests, name='requests'),
     path('settings/', views.settings, name='settings'),
     path('api/filter-books/', views.filter_books, name='filter_books'),
-    
-    # URL for the admin's priority queue
-    path('admin/waiting-list/', views.view_waiting_list, name='view_waiting_list'),
-    
-    # API Endpoint for the user's book request
-    path('api/request-book/<int:book_id>/', views.request_book, name='request_book'),
 
     path('user/dashboard/', views.userDashboard, name='userDashboard'),
     path('user/books', views.myBooks, name='myBooks'),
