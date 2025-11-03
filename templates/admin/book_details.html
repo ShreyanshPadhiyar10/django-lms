@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 
-{% block title %}Book Details{% endblock %} 
+{% block title %}Admin Dashboard{% endblock %} 
 
 {% block content %}
 
@@ -49,7 +49,7 @@
             <ol class="list-none p-0 inline-flex">
                 <li class="flex items-center">
                     <a
-                        href="{% url 'admin_books' %}"
+                        href="{% url 'books' %}"
                         class="text-blue-600 hover:text-blue-800 transition duration-150"
                         >Home</a
                     >
@@ -91,9 +91,9 @@
                     </p>
 
                     <div
-                        class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-t border-gray-100 py-6 mb-6 space-y-4 sm:space-y-0 sm:space-x-4"
+                        class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-t border-gray-100 py-6 mb-6"
                     >
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-4 mb-4 sm:mb-0">
                             {% if book.available_copies > 0 %}
                             <span
                                 id="availability-status"
@@ -109,35 +109,25 @@
                                 Unavailable
                             </span>
                             {% endif %}
+
                             <p class="text-gray-600 font-medium">
                                 <span
                                     id="available-copies"
                                     class="font-bold text-gray-800"
+                                    >{{book.available_copies}} of
+                                    {{book.total_copies}}</span
                                 >
-                                    {{book.available_copies}} of {{book.total_copies}}
-                                </span>
                                 copies available
                             </p>
                         </div>
 
-                        <div class="flex items-center space-x-3">
-                            <a
-                                href="{% url 'admin_edit_book' book.book_id %}"
-                                class="flex items-center gap-2 py-2.5 px-6 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
-                            >
-                                Edit
-                            </a>
-
-                            <a
-                                href="{% url 'admin_delete_book' book.book_id %}"
-                                onclick="return confirm('Are you sure you want to delete this book?');"
-                                class="flex items-center gap-2 py-2.5 px-6 text-sm font-semibold bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-150 shadow-md"
-                            >
-                                Delete
-                            </a>
-                        </div>
+                        <button
+                            id="request-button"
+                            class="py-3 px-8 text-lg bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition duration-150 shadow-lg shadow-blue-200/50 w-full sm:w-auto"
+                        >
+                            Edit Book
+                        </button>
                     </div>
-
 
                     <div class="mb-8">
                         <p

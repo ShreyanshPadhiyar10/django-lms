@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Admin Books{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
 
@@ -121,17 +121,12 @@
             if (paginationLink) {
                 event.preventDefault();
 
-            const url = new URL(link.href);
-            const page = url.searchParams.get('page');
+                const url = new URL(paginationLink.href);
+                const page = url.searchParams.get('page');
 
-            if (page) {
-                // Update URL in browser without reloading
-                const currentUrl = new URL(window.location);
-                currentUrl.searchParams.set('page', page);
-                window.history.pushState({}, '', currentUrl);
-
-                // Fetch books for that page
-                fetchBooks(page);
+                if (page) {
+                    fetchBooks(page);
+                }
             }
         });
     });
