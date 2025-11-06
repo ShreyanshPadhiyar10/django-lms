@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language, User, Admin
+from library_db.models import Book, Genre, Language, User, Admin, Request
 from django.db.models import Q
 from functools import wraps
 from django.contrib import messages
@@ -223,11 +223,26 @@ def admin_issue_receive(request):
 
 @admin_login_required
 def admin_users(request):
-    return render(request, 'admin/users.html')
+    users = User.objects.all().order_by('name')
+
+    context = {
+        'users' : users,
+        'total_users': users.count()
+    }
+    return render(request, 'admin/users.html', context)
 
 @admin_login_required
 def admin_requests(request):
-    return render(request, 'admin/requests.html')
+    pending_requests = Request.objects.filter(status='pending').select_related('user', 'book').order_by('-request_date')
+    approved_requests = Request.objects.filter(status='approved').select_related('user', 'book').order_by('-request_date')
+    rejected_requests = Request.objects.filter(status='rejected').select_related('user', 'book').order_by('-request_date')
+
+    context = {
+        'pending_requests': pending_requests,
+        'approved_requests': approved_requests,
+        'rejected_requests': rejected_requests,
+    }
+    return render(request, 'admin/requests.html', context)
 
 @admin_login_required
 def admin_settings(request):
