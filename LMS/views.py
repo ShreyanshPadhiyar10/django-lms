@@ -223,7 +223,13 @@ def admin_issue_receive(request):
 
 @admin_login_required
 def admin_users(request):
-    return render(request, 'admin/users.html')
+    users = User.objects.all().order_by('name')
+
+    context = {
+        'users' : users,
+        'total_users': users.count()
+    }
+    return render(request, 'admin/users.html', context)
 
 @admin_login_required
 def admin_requests(request):
