@@ -1,10 +1,6 @@
 
 from django.contrib import admin
-from .models import Admin, Genre, Book, User, IssueRecord, Request, WaitingList, Language
-
-@admin.register(Admin)
-class AdminAdmin(admin.ModelAdmin):
-    list_display = ('admin_id', 'name', 'email')
+from .models import Genre, Book, IssueRecord, Request, WaitingList, Language
 
 
 @admin.register(Genre)
@@ -22,12 +18,6 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ('book_id', 'isbn', 'title', 'author', 'genre_display', 'language', 'image_url', 'total_copies', 'available_copies')
     search_fields = ('title', 'author', 'isbn')
     list_filter = ('genre',)
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'name', 'email', 'phone')
-    search_fields = ('name', 'email')
 
 
 @admin.register(IssueRecord)

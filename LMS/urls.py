@@ -47,9 +47,10 @@ urlpatterns = [
     path('user/signup/', views.user_signup, name='user_signup'),
     path('user/logout/', views.user_logout, name='user_logout'),
 
-    path('admin/login/', views.admin_login, name='admin_login'),
+    # path('admin/login/', views.admin_login, name='admin_login'),
     path('admin/logout/', views.admin_logout, name='admin_logout'),
 
     #APIs
     path('api/filter-books/', views.filter_books, name='filter_books'),
+    path('api/request-book/<int:book_id>/', views.request_book, name='request_book'),
 ]

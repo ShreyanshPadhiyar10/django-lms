@@ -1,14 +1,24 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
-class Admin(models.Model):
-    admin_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+class CustomUser(AbstractUser):
+    # Django already includes: username, password, first_name, last_name, email, 
+    # is_staff (for admin), is_superuser, is_active, date_joined, last_login.
+    
+    # Add your custom field:
+    phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
+    
+    # Make email unique and required (highly recommended)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
+
+    # Set email as the unique identifier for authentication instead of username
+    USERNAME_FIELD = 'email'
+    # Fields REQUIRED when creating a superuser (email is automatically required by USERNAME_FIELD)
+    REQUIRED_FIELDS = ['username', 'phone'] 
 
     def __str__(self):
-        return self.name
-
+        return self.email
 
 class Genre(models.Model):
     genre_id = models.AutoField(primary_key=True)
@@ -44,18 +54,6 @@ class Book(models.Model):
 
     genre_display.short_description = 'Genres'
 
-
-class User(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
 class IssueRecord(models.Model):
     STATUS_CHOICES = [
         ('issued', 'Issued'),
@@ -64,7 +62,7 @@ class IssueRecord(models.Model):
     ]
 
     issue_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='issues')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='issues')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='issues')
     issue_date = models.DateField()
     due_date = models.DateField()
@@ -72,7 +70,7 @@ class IssueRecord(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     def __str__(self):
-        return f"{self.book.title} → {self.user.name}"
+        return f"{self.book.title} → {self.user.username}"
 
 
 class Request(models.Model):
@@ -83,21 +81,21 @@ class Request(models.Model):
     ]
 
     request_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='requests')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='requests')
     request_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"Request {self.request_id} - {self.book.title} by {self.user.name}"
+        return f"Request {self.request_id} - {self.book.title} by {self.user.username}"
 
 
 class WaitingList(models.Model):
     waiting_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='waiting_list')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='waiting_list')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='waiting_list')
     position = models.IntegerField()
     request_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.name} waiting for {self.book.title} (#{self.position})"
+        return f"{self.user.username} waiting for {self.book.title} (#{self.position})"

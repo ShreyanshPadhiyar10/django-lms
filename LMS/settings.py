@@ -141,3 +141,5 @@ CACHES = {
         # OR for Mac/Linux: '/var/tmp/django_cache',
     }
 }
+
+AUTH_USER_MODEL = 'library_db.CustomUser'

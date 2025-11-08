@@ -1,44 +1,25 @@
-from django.shortcuts import render , redirect, get_object_or_404
-from library_db.models import Book, Genre, Language, User, Admin, Request
-from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
+from library_db.models import Book, Genre, Language , Request, IssueRecord, WaitingList
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q, Max
 from functools import wraps
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import authenticate, login as auth_login
 from django.core.paginator import Paginator
 from django.core.cache import cache
-from functools import reduce
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from datetime import date, timedelta
 import pickle
+User = get_user_model()
 
-def user_login_required(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not request.session.get('user_id'):
-            return redirect('user_login')
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
-def admin_login_required(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not request.session.get('admin_id'):
-            return redirect('admin_login')
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
-def login_required_any(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not (request.session.get('user_id') or request.session.get('admin_id')):
-            return redirect('user_login')
-        return view_func(request, *args, **kwargs)
-    return wrapper
 
 def home(request):
     return redirect('user_login')
 
-@admin_login_required
+@staff_member_required
 def admin_dashboard(request):
     total_books = Book.objects.count()
     total_users = User.objects.count()
@@ -49,11 +30,8 @@ def admin_dashboard(request):
     }
     return render(request, 'admin/dashboard.html', context)
 
-@admin_login_required
+@staff_member_required
 def admin_books(request):
-    if 'admin_id' not in request.session:
-        return redirect('admin_login')
-
     all_books_list = Book.objects.all().order_by('title')
     
     paginator = Paginator(all_books_list, 8) 
@@ -92,7 +70,6 @@ class Trie:
             ids.update(self._collect_all_ids_from_node(child_node))
         return ids
     
-@login_required_any
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
@@ -123,7 +100,7 @@ def filter_books(request):
     books_html = render_to_string('partials/book_grid_content.html', {'books_page': page_obj})
     return JsonResponse({'books_html': books_html})
 
-@admin_login_required
+@staff_member_required
 def admin_add_book(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -157,7 +134,7 @@ def admin_add_book(request):
     
     return render(request, 'admin/add_book.html')
 
-@admin_login_required
+@staff_member_required
 def admin_edit_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
 
@@ -217,13 +194,13 @@ def admin_delete_book(request, book_id):
     book.delete()
     messages.success(request, f'"{book.title}" has been deleted successfully.')
     return redirect('admin_books')
-@admin_login_required
+@staff_member_required
 def admin_issue_receive(request):
     return render(request, 'admin/issue_receive.html')
 
-@admin_login_required
+@staff_member_required
 def admin_users(request):
-    users = User.objects.all().order_by('name')
+    users = User.objects.all().order_by('username')
 
     context = {
         'users' : users,
@@ -231,7 +208,7 @@ def admin_users(request):
     }
     return render(request, 'admin/users.html', context)
 
-@admin_login_required
+@staff_member_required
 def admin_requests(request):
     pending_requests = Request.objects.filter(status='pending').select_related('user', 'book').order_by('-request_date')
     approved_requests = Request.objects.filter(status='approved').select_related('user', 'book').order_by('-request_date')
@@ -244,19 +221,16 @@ def admin_requests(request):
     }
     return render(request, 'admin/requests.html', context)
 
-@admin_login_required
+@staff_member_required
 def admin_settings(request):
     return render(request, 'admin/settings.html')
 
-@user_login_required
+@login_required
 def user_dashboard(request):
     return render(request, 'users/dashboard.html')
 
-@user_login_required
+@login_required
 def user_browse(request):
-    if 'user_id' not in request.session:
-        return redirect('user_login')
-    
     all_books_list = Book.objects.all().order_by('title')
     
     paginator = Paginator(all_books_list, 8) 
@@ -273,48 +247,112 @@ def user_browse(request):
     }
     return render(request, 'users/browse.html', context)
 
-@user_login_required
+@login_required
+def request_book(request, book_id):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+    
+    user = request.user
+    print(f"DEBUG: Final User object: {user} (ID: {user.pk})")
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'message': 'Please log in to request books.'}, status=401)
+
+    book = get_object_or_404(Book, pk=book_id)
+    
+
+    # 1. Check if user already has this book issued
+    if IssueRecord.objects.filter(book=book, user=user, status__in=['issued', 'overdue']).exists():
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'You already have this book issued.'
+        }, status=400)
+
+    # 2. Check if user is already on the waiting list
+    if WaitingList.objects.filter(book=book, user=user).exists():
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'You are already on the waiting list for this book.'
+        }, status=400)
+
+    # 3. Process the request
+    if book.available_copies > 0:
+        # --- Book is Available: Create an IssueRecord ---
+        book.available_copies -= 1
+        book.save()
+
+        newissue = IssueRecord.objects.create(
+            user=user,
+            book=book,
+            issue_date=date.today(),
+            due_date=date.today() + timedelta(days=14), # 2-week loan period
+            status='issued'
+        )
+        print("new issue created successfully ",newissue)
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Book issued successfully! It has been added to your profile.',
+            'new_copies': book.available_copies
+        })
+    else:
+        # --- Book is Unavailable: Add to WaitingList (Priority Queue) ---
+        
+        # Find the next position in the queue for this specific book
+        current_max_pos = WaitingList.objects.filter(book=book).aggregate(Max('position'))
+        new_pos = (current_max_pos['position__max'] or 0) + 1
+        
+        newList = WaitingList.objects.create(
+            user=user,
+            book=book,
+            position=new_pos
+        )
+        print("new waiting list created successfully ",newList)
+        
+        return JsonResponse({
+            'status': 'waiting', 
+            'message': 'This book is unavailable. You have been added to the waiting list.'
+        })
+
+@login_required
 def user_my_books(request):
     return render(request, 'users/books.html')
 
-@user_login_required
+@login_required
 def user_my_requests(request):
     return render(request, 'users/requests.html')
 
-@admin_login_required
+@staff_member_required
 def admin_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'admin/book_details.html', {'book': book})
 
-@user_login_required
+@login_required
 def user_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'users/book_details.html', {'book': book})
 
 def user_login(request):
     if request.method == 'POST':
-        identifier = request.POST.get('email')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        if not (identifier and password):
+        if not (email and password):
             messages.error(request, "Please enter email address and password.")
             return render(request, 'auth/user_login.html')
         
-        try:
-            user = User.objects.get(Q(email__iexact=identifier) | Q(phone__iexact=identifier))
-        except User.DoesNotExist:
-            messages.error(request, "Invalid Credentials. Please try again.")
-            return render(request, 'auth/user_login.html')
-        
-        if password == user.password:
-            request.session['user_id'] = user.user_id
-            request.session['user_name'] = user.name
-            request.session.set_expiry(60 * 60 * 24 * 7)  # optional
-            messages.success(request, f"Welcome back, {user.name}!")
-            return redirect('user_dashboard')
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, f"Welcome back!")
+            
+            # Redirect based on their role
+            if user.is_staff:
+                return redirect('admin_dashboard')
+            else:
+                return redirect('user_dashboard')
         else:
             messages.error(request, "Invalid credentials.")
-            return render(request, 'auth/user_login.html')
     return render(request, 'auth/user_login.html')
 
 def user_signup(request):
@@ -333,54 +371,57 @@ def user_signup(request):
             messages.error(request, "User with this email or phone already exists.")
             return render(request, 'auth/user_signup.html')
         
-        user = User.objects.create(
-            name = name,
-            phone = phone,
-            email = email,
-            password = password
-        )
+        try:
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                password=password,
+                first_name=name,
+                phone=phone
+            )
+            # Log them in immediately
+            auth_login(request, user)
+            messages.success(request, "Registration successful. You are now logged in.")
+            return redirect('user_dashboard')
 
-        request.session['user_id'] = user.user_id
-        request.session['user_name'] = user.name
-        request.session.set_expiry(60 * 60 * 24 * 7)
+        except Exception as e:
+            messages.error(request, f"An error occurred during signup: {e}")
+            return render(request, 'auth/user_signup.html')
 
-
-        messages.success(request, "Registration successful. You are now logged in.")
-        return redirect('user_dashboard')
     return render(request, 'auth/user_signup.html')
 
-def admin_login(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+# def admin_login(request):
+#     if request.method == 'POST':
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
 
-        if not (email and password):
-            messages.error(request, "Please enter both email and password")
-            return render(request, 'auth/admin_login.html')
+#         if not (email and password):
+#             messages.error(request, "Please enter both email and password")
+#             return render(request, 'auth/admin_login.html')
         
-        try:
-            admin = Admin.objects.get(email=email)
-        except Admin.DoesNotExist:
-            messages.error(request, "Invalid Credentials. Please try again.")
-            return render(request, 'auth/admin_login.html')
+#         try:
+#             admin = Admin.objects.get(email=email)
+#         except Admin.DoesNotExist:
+#             messages.error(request, "Invalid Credentials. Please try again.")
+#             return render(request, 'auth/admin_login.html')
         
-        if password == admin.password:
-            request.session['admin_id'] = admin.admin_id
-            request.session['admin_name'] = admin.name
-            request.session.set_expiry(60 * 60 * 24 * 7)
-            messages.success(request, f"Welcome back, {admin.name}!")
-            return redirect('admin_dashboard')
-        else:
-            messages.error(request, "Invalid credentials.")
-            return render(request, 'auth/admin_login.html')
-    return render(request, 'auth/admin_login.html')
+#         if password == admin.password:
+#             request.session['admin_id'] = admin.admin_id
+#             request.session['admin_name'] = admin.name
+#             request.session.set_expiry(60 * 60 * 24 * 7)
+#             messages.success(request, f"Welcome back, {admin.name}!")
+#             return redirect('admin_dashboard')
+#         else:
+#             messages.error(request, "Invalid credentials.")
+#             return render(request, 'auth/admin_login.html')
+#     return render(request, 'auth/admin_login.html')
 
-@user_login_required
+@login_required
 def user_logout(request):
     logout(request)  
     return redirect('user_login')  
 
-@admin_login_required
+@staff_member_required
 def admin_logout(request):
     logout(request)
-    return redirect('admin_login') 
+    return redirect('user_login') 
