@@ -315,7 +315,14 @@ def request_book(request, book_id):
 
 @login_required
 def user_my_books(request):
-    return render(request, 'users/books.html')
+    issued_books = IssueRecord.objects.filter(user__email =request.user.email).select_related('book')
+    user_request = Request.objects.filter(user=request.user).select_related('book')
+
+    context = {
+        'issued_books': issued_books,
+        'user_request': user_request,
+    }
+    return render(request, 'users/books.html', context)
 
 @login_required
 def user_my_requests(request):

@@ -1,7 +1,29 @@
 
 from django.contrib import admin
-from .models import Genre, Book, IssueRecord, Request, WaitingList, Language
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser, Genre, Book, IssueRecord, Request, WaitingList, Language
 
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ('email', 'username', 'phone', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_active')
+    search_fields = ('email', 'username', 'phone')
+    ordering = ('email',)
+
+    fieldsets = (
+        (None, {'fields': ('username', 'email', 'password')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'phone')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important Dates', {'fields': ('last_login', 'date_joined')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'phone', 'password1', 'password2', 'is_staff', 'is_active'),
+        }),
+    )
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
