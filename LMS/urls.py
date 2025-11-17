@@ -53,4 +53,7 @@ urlpatterns = [
     #APIs
     path('api/filter-books/', views.filter_books, name='filter_books'),
     path('api/request-book/<int:book_id>/', views.request_book, name='request_book'),
+    path('admin/requests/', views.view_pending_requests, name='view_pending_requests'),
+    path('admin/requests/approve/<int:request_id>/', views.approve_request, name='approve_request'),
+    path('admin/requests/reject/<int:request_id>/', views.reject_request, name='reject_request'),
 ]

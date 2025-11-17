@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from library_db.models import Book, Genre, Language , Request, IssueRecord, WaitingList
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q, Max
 from functools import wraps
@@ -260,12 +260,18 @@ def request_book(request, book_id):
 
     book = get_object_or_404(Book, pk=book_id)
     
-
     # 1. Check if user already has this book issued
     if IssueRecord.objects.filter(book=book, user=user, status__in=['issued', 'overdue']).exists():
         return JsonResponse({
             'status': 'error', 
             'message': 'You already have this book issued.'
+        }, status=400)
+        
+    # 2. Check if user already has a PENDING request
+    if Request.objects.filter(book=book, user=user, status='pending').exists():
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'You already have a pending approval request for this book.'
         }, status=400)
 
     # 2. Check if user is already on the waiting list
@@ -274,37 +280,53 @@ def request_book(request, book_id):
             'status': 'error', 
             'message': 'You are already on the waiting list for this book.'
         }, status=400)
-
-    # 3. Process the request
+        
     if book.available_copies > 0:
-        # --- Book is Available: Create an IssueRecord ---
-        book.available_copies -= 1
-        book.save()
-
-        newissue = IssueRecord.objects.create(
+        # Book is available. Create a 'pending' request for the admin to approve.
+        Request.objects.create(
             user=user,
             book=book,
-            issue_date=date.today(),
-            due_date=date.today() + timedelta(days=14), # 2-week loan period
-            status='issued'
+            status='pending'
         )
-        print("new issue created successfully ",newissue)
         return JsonResponse({
-            'status': 'success', 
-            'message': 'Book issued successfully! It has been added to your profile.',
-            'new_copies': book.available_copies
+            'status': 'pending', 
+            'message': 'Book is available! Your request has been sent for admin approval.'
         })
+
+    # 3. Process the request
+    # if book.available_copies > 0:
+    #     # --- Book is Available: Create an IssueRecord ---
+    #     book.available_copies -= 1
+    #     book.save()
+
+    #     newissue = IssueRecord.objects.create(
+    #         user=user,
+    #         book=book,
+    #         issue_date=date.today(),
+    #         due_date=date.today() + timedelta(days=14), # 2-week loan period
+    #         status='issued'
+    #     )
+    #     print("new issue created successfully ",newissue)
+    #     return JsonResponse({
+    #         'status': 'success', 
+    #         'message': 'Book issued successfully! It has been added to your profile.',
+    #         'new_copies': book.available_copies
+    #     })
     else:
         # --- Book is Unavailable: Add to WaitingList (Priority Queue) ---
         
         # Find the next position in the queue for this specific book
-        current_max_pos = WaitingList.objects.filter(book=book).aggregate(Max('position'))
-        new_pos = (current_max_pos['position__max'] or 0) + 1
+        current_count = WaitingList.objects.all().count()
+                # 2. The new position is just the count + 1.
+        pos = current_count + 1
+        # current_max_pos = WaitingList.objects.filter(book=book).aggregate(Max('position'))
+        # print(current_max_pos)
+        # new_pos = (current_max_pos['position__max'] or 0) + 1
         
         newList = WaitingList.objects.create(
             user=user,
             book=book,
-            position=new_pos
+            position=pos
         )
         print("new waiting list created successfully ",newList)
         
@@ -312,6 +334,57 @@ def request_book(request, book_id):
             'status': 'waiting', 
             'message': 'This book is unavailable. You have been added to the waiting list.'
         })
+
+@user_passes_test(lambda u: u.is_superuser)
+def view_pending_requests(request):
+    pending_list = Request.objects.filter(status='pending').select_related('user', 'book')
+    approved_list = Request.objects.filter(status='approved').select_related('user', 'book')
+    rejected_list = Request.objects.filter(status='rejected').select_related('user', 'book')
+    
+    context = {
+        'pending_requests': pending_list,
+        'approved_requests': approved_list,
+        'rejected_requests': rejected_list,
+    }
+    return render(request, 'admin/requests.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def approve_request(request, request_id):
+    req = get_object_or_404(Request, pk=request_id)
+    book = req.book
+
+    if book.available_copies > 0:
+        # Issue the book
+        book.available_copies -= 1
+        book.save()
+        
+        IssueRecord.objects.create(
+            user=req.user,
+            book=book,
+            issue_date=date.today(),
+            due_date=date.today() + timedelta(days=14),
+            status='issued'
+        )
+        
+        req.status = 'approved'
+        req.save()
+        messages.success(request, f"Request for '{book.title}' by {req.user.username} approved.")
+    else:
+        # No copies, so we must reject it
+        req.status = 'rejected'
+        req.save()
+        messages.error(request, f"Could not approve request for '{book.title}'. No copies available.")
+
+    return redirect('view_pending_requests')
+
+# --- NEW: Admin view to REJECT a request ---
+@user_passes_test(lambda u: u.is_superuser)
+def reject_request(request, request_id):
+    req = get_object_or_404(Request, pk=request_id)
+    req.status = 'rejected'
+    req.save()
+    messages.warning(request, f"Request for '{req.book.title}' by {req.user.username} rejected.")
+    return redirect('view_pending_requests')
 
 @login_required
 def user_my_books(request):
@@ -326,7 +399,23 @@ def user_my_books(request):
 
 @login_required
 def user_my_requests(request):
-    return render(request, 'users/requests.html')
+    user = request.user
+
+    # Get requests for the 3 tabs
+    pending_requests = Request.objects.filter(user=user, status='pending').select_related('book')
+    approved_requests = Request.objects.filter(user=user, status='approved').select_related('book')
+    rejected_requests = Request.objects.filter(user=user, status='rejected').select_related('book')
+    
+    # Get items from the priority queue (WaitingList)
+    waiting_list_items = WaitingList.objects.filter(user=user).select_related('book').order_by('position')
+
+    context = {
+        'pending_requests': pending_requests,
+        'approved_requests': approved_requests,
+        'rejected_requests': rejected_requests,
+        'waiting_list_items': waiting_list_items,
+    }
+    return render(request, 'users/requests.html', context)
 
 @staff_member_required
 def admin_book_details(request, book_id):
@@ -396,32 +485,6 @@ def user_signup(request):
             return render(request, 'auth/user_signup.html')
 
     return render(request, 'auth/user_signup.html')
-
-# def admin_login(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-
-#         if not (email and password):
-#             messages.error(request, "Please enter both email and password")
-#             return render(request, 'auth/admin_login.html')
-        
-#         try:
-#             admin = Admin.objects.get(email=email)
-#         except Admin.DoesNotExist:
-#             messages.error(request, "Invalid Credentials. Please try again.")
-#             return render(request, 'auth/admin_login.html')
-        
-#         if password == admin.password:
-#             request.session['admin_id'] = admin.admin_id
-#             request.session['admin_name'] = admin.name
-#             request.session.set_expiry(60 * 60 * 24 * 7)
-#             messages.success(request, f"Welcome back, {admin.name}!")
-#             return redirect('admin_dashboard')
-#         else:
-#             messages.error(request, "Invalid credentials.")
-#             return render(request, 'auth/admin_login.html')
-#     return render(request, 'auth/admin_login.html')
 
 @login_required
 def user_logout(request):

@@ -94,7 +94,7 @@ class WaitingList(models.Model):
     waiting_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='waiting_list')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='waiting_list')
-    position = models.IntegerField()
+    position = models.IntegerField(default=0)
     request_date = models.DateField(auto_now_add=True)
 
     def __str__(self):

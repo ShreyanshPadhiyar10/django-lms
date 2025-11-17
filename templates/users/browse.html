@@ -195,11 +195,11 @@
                         : 'block text-sm font-medium mb-4 text-green-700';
 
                     // If it was issued, update the copy count on the main page
-                    if (data.status === 'success') {
-                        const copiesText = document.getElementById(`copies-${bookId}`);
-                        if (copiesText) {
-                            copiesText.textContent = copiesText.textContent.replace(/(\d+)\s\//, `${data.new_copies} /`);
-                        }
+                    if (data.status === 'pending') {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-blue-700';
+                    } else {
+                        // This will handle the 'success' for 'issued' if you ever bring that back
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-green-700';
                     }
                 } else {
                     // Error (e.g., already requested)
