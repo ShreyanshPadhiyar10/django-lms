@@ -1,7 +1,7 @@
 import csv
 from library_db.models import Book, Genre, Language
 
-with open('Book(Sheet1).csv', newline='', encoding='utf-8') as f:
+with open('books_500.csv', newline='', encoding='utf-8') as f:
     reader = csv.DictReader(f)
     for row in reader:
         isbn = row['isbn'].strip()
