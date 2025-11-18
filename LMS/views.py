@@ -48,6 +48,40 @@ def admin_books(request):
     }
     return render(request, 'admin/books.html', context)
 
+
+class LRUCache:
+    def __init__(self, session, key='recently_viewed', capacity=8):
+        self.session = session
+        self.key = key
+        self.capacity = capacity
+        # We retrieve the 'queue' from the session (acting as our Linked List)
+        # If it doesn't exist, we initialize an empty list.
+        self.queue = self.session.get(self.key, [])
+
+    def add(self, book_id):
+        # Step 1: Search and Remove (O(N) for lists)
+        if book_id in self.queue:
+            self.queue.remove(book_id)
+        
+        # Step 2: Add to Head
+        self.queue.insert(0, book_id)
+        
+        # Step 3: Check Capacity and Truncate Tail
+        if len(self.queue) > self.capacity:
+            self.queue.pop() # Removes the last element (Tail)
+            
+        # Save the updated structure back to the session "memory"
+        self.save()
+
+    def get_ids(self):
+        """Returns the list of IDs in order (Most recent first)"""
+        return self.queue
+
+    def save(self):
+        """Persists the data structure to the user session"""
+        self.session[self.key] = self.queue
+        self.session.modified = True
+
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -227,7 +261,24 @@ def admin_settings(request):
 
 @login_required
 def user_dashboard(request):
-    return render(request, 'users/dashboard.html')
+    lru = LRUCache(request.session)
+    
+    # Get the ordered list of IDs: e.g., [5, 12, 3]
+    recent_ids = lru.get_ids()
+    
+    # Fetch the actual Book objects from DB based on these IDs
+    # Note: SQL query might scramble order, so we preserve the LRU order manually in Python
+    books_unsorted = Book.objects.filter(pk__in=recent_ids)
+    
+    # Sort the book objects to match the order of 'recent_ids'
+    # This is a Python-side sort to respect the DSA order
+    recently_viewed = sorted(books_unsorted, key=lambda book: recent_ids.index(book.pk))
+
+    context = {
+        # ... your existing context ...
+        'recently_viewed': recently_viewed, 
+    }
+    return render(request, 'users/dashboard.html', context)
 
 @login_required
 def user_browse(request):
@@ -317,11 +368,7 @@ def request_book(request, book_id):
         
         # Find the next position in the queue for this specific book
         current_count = WaitingList.objects.all().count()
-                # 2. The new position is just the count + 1.
         pos = current_count + 1
-        # current_max_pos = WaitingList.objects.filter(book=book).aggregate(Max('position'))
-        # print(current_max_pos)
-        # new_pos = (current_max_pos['position__max'] or 0) + 1
         
         newList = WaitingList.objects.create(
             user=user,
@@ -425,6 +472,11 @@ def admin_book_details(request, book_id):
 @login_required
 def user_book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
+    
+    lru = LRUCache(request.session)
+    
+    lru.add(book.pk)
+
     return render(request, 'users/book_details.html', {'book': book})
 
 def user_login(request):
