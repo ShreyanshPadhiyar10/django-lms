@@ -81,35 +81,18 @@ class LRUCache:
         """Persists the data structure to the user session"""
         self.session[self.key] = self.queue
         self.session.modified = True
-
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.book_ids = set()
-
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
-    def insert(self, word, book_id):
-        pass
-    def search_prefix(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children: return set()
-            node = node.children[char]
-        return self._collect_all_ids_from_node(node)
-    def _collect_all_ids_from_node(self, node):
-        ids = set(node.book_ids)
-        for child_node in node.children.values():
-            ids.update(self._collect_all_ids_from_node(child_node))
-        return ids
     
 def filter_books(request):
     queryset = Book.objects.all().order_by('title')
     
     search_query = request.GET.get('search', '').lower().strip()
-    genre_id = request.GET.get('genre', '')
-    language_id = request.GET.get('language', '')
+    
+    # Get comma-separated strings and convert to lists
+    genre_in = [x for x in request.GET.get('genre_in', '').split(',') if x]
+    genre_ex = [x for x in request.GET.get('genre_ex', '').split(',') if x]
+    
+    lang_in = [x for x in request.GET.get('lang_in', '').split(',') if x]
+    lang_ex = [x for x in request.GET.get('lang_ex', '').split(',') if x]
     
     if search_query:
         pickled_trie = cache.get('book_trie_index')
@@ -123,11 +106,19 @@ def filter_books(request):
         else:
             queryset = queryset.filter(title__icontains=search_query)
 
-    if genre_id:
-        queryset = queryset.filter(genre__pk=genre_id)
-    if language_id:
-        queryset = queryset.filter(language__pk=language_id)
+    # 1. Include Logic (OR logic within the same category, e.g., Fiction OR Sci-Fi)
+    if genre_in:
+        queryset = queryset.filter(genre__pk__in=genre_in)
+    if lang_in:
+        queryset = queryset.filter(language__pk__in=lang_in)
 
+    # 2. Exclude Logic (Exclude books with ANY of these tags)
+    if genre_ex:
+        queryset = queryset.exclude(genre__pk__in=genre_ex)
+    if lang_ex:
+        queryset = queryset.exclude(language__pk__in=lang_ex)
+
+    print("query set : -",queryset)
     page_number = request.GET.get('page', 1)
     paginator = Paginator(queryset, 8)
     page_obj = paginator.get_page(page_number)
@@ -273,9 +264,11 @@ def user_dashboard(request):
     # Sort the book objects to match the order of 'recent_ids'
     # This is a Python-side sort to respect the DSA order
     recently_viewed = sorted(books_unsorted, key=lambda book: recent_ids.index(book.pk))
+    pending_list = Request.objects.filter(status='pending').select_related('user', 'book')
 
     context = {
         # ... your existing context ...
+        'pending_list': pending_list,
         'recently_viewed': recently_viewed, 
     }
     return render(request, 'users/dashboard.html', context)
