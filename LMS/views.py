@@ -108,7 +108,8 @@ def filter_books(request):
 
     # 1. Include Logic (OR logic within the same category, e.g., Fiction OR Sci-Fi)
     if genre_in:
-        queryset = queryset.filter(genre__pk__in=genre_in)
+        for g_id in genre_in:
+            queryset = queryset.filter(genre__pk=g_id)
     if lang_in:
         queryset = queryset.filter(language__pk__in=lang_in)
 
