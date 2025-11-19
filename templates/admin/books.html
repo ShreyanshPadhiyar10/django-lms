@@ -25,39 +25,64 @@
         </button>
     </header>
     <main class="p-4 md:p-8">
-
-        <h1 class="text-3xl font-bold text-gray-900 mb-1">Book Catalog</h1>
-        <p class="text-gray-500 mb-8">Browse and search our collection</p>
-
         <form id="filter-form" class="flex flex-col md:flex-row gap-4 mb-10 items-center text-black">
             <div class="relative flex-grow w-full md:w-auto">
                 <input type="text" id="search-input" name="search" placeholder="Search books by keyword..."
                     class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.3-4.3"></path>
                 </svg>
             </div>
 
-            <div class="flex gap-4 w-full md:w-auto">
-                <select id="genre-filter" name="genre"
-                    class="py-3 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm w-full">
-                    <option value="">All Genres</option>
+    <!-- GENRE DROPDOWN -->
+            <div class="relative w-full md:w-48">
+                <button type="button" id="admin-genre-btn"
+                    class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm">
+                    <span id="admin-genre-label">All Genres</span>
+                    <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div id="admin-genre-menu"
+                    class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
                     {% for genre in all_genres %}
-                    <option value="{{ genre.pk }}">{{ genre.genre_name }}</option>
+                    <div class="admin-filter-item filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                        data-id="{{ genre.pk }}" data-type="genre" data-state="neutral">
+                        <span class="text-sm text-gray-700 font-medium">{{ genre.genre_name }}</span>
+                        <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                    </div>
                     {% endfor %}
-                </select>
-                <select id="language-filter" name="language"
-                    class="py-3 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm w-full">
-                    <option value="">All Languages</option>
+                </div>
+            </div>
+
+    <!-- LANGUAGE DROPDOWN -->
+            <div class="relative w-full md:w-48">
+                <button type="button" id="admin-lang-btn"
+                    class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-left flex justify-between items-center shadow-sm">
+                    <span id="admin-lang-label">All Languages</span>
+                    <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div id="admin-lang-menu"
+                    class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto p-2">
                     {% for lang in all_languages %}
-                    <option value="{{ lang.pk }}">{{ lang.language_name }}</option>
+                    <div class="admin-filter-item filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors select-none"
+                        data-id="{{ lang.pk }}" data-type="language" data-state="neutral">
+                        <span class="text-sm text-gray-700 font-medium">{{ lang.language_name }}</span>
+                        <span class="status-icon w-5 h-5 flex items-center justify-center"></span>
+                    </div>
                     {% endfor %}
-                </select>
+                </div>
             </div>
         </form>
+
 
         <h2 class="text-2xl font-bold text-gray-800 mb-6">View Books</h2>
 
@@ -71,71 +96,121 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('search-input');
-        const genreFilter = document.getElementById('genre-filter');
-        const languageFilter = document.getElementById('language-filter');
-        const bookGrid = document.getElementById('book-grid');
-        const paginationContainer = document.getElementById('pagination-container');
-        const bookGridContainer = document.getElementById('book-grid-container');
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const bookGridContainer = document.getElementById('book-grid-container');
 
-        let debounceTimeout;
-        async function fetchBooks(page = 1) {
-            const searchQuery = searchInput.value;
-            const genreId = genreFilter.value;
-            const languageId = languageFilter.value;
+    // Dropdowns
+    const genreBtn = document.getElementById('admin-genre-btn');
+    const genreMenu = document.getElementById('admin-genre-menu');
+    const langBtn = document.getElementById('admin-lang-btn');
+    const langMenu = document.getElementById('admin-lang-menu');
 
-            const params = new URLSearchParams({
-                search: searchQuery,
-                genre: genreId,
-                language: languageId,
-                page: page
-            });
+    // Label updates
+    const genreLabel = document.getElementById('admin-genre-label');
+    const langLabel = document.getElementById('admin-lang-label');
 
-            const url = `{% url 'filter_books' %}?${params.toString()}`;
+    // Tri-state filter items
+    const filterItems = document.querySelectorAll('.admin-filter-item');
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+    let activeFilters = { genre: {}, language: {} };
+    let debounceTimeout;
 
-                bookGridContainer.innerHTML = data.books_html;
-                paginationContainer.innerHTML = data.pagination_html;
-            } catch (error) {
-                console.error('Error fetching books:', error);
-                bookGrid.innerHTML = '<p class="col-span-full text-center text-red-500">An error occurred while searching. Please try again.</p>';
-            }
-        }
+    // Dropdown toggle
+    function toggleMenu(menu) {
+        const isHidden = menu.classList.contains('hidden');
+        genreMenu.classList.add('hidden');
+        langMenu.classList.add('hidden');
+        if (isHidden) menu.classList.remove('hidden');
+    }
 
+    genreBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(genreMenu); });
+    langBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(langMenu); });
 
-        searchInput.addEventListener('input', () => {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(() => {
-                fetchBooks(1);
-            }, 300);
-        });
+    document.addEventListener('click', () => {
+        genreMenu.classList.add('hidden');
+        langMenu.classList.add('hidden');
+    });
 
-        genreFilter.addEventListener('change', () => fetchBooks(1));
-        languageFilter.addEventListener('change', () => fetchBooks(1));
+    genreMenu.addEventListener('click', e => e.stopPropagation());
+    langMenu.addEventListener('click', e => e.stopPropagation());
 
-        paginationContainer.addEventListener('click', function (event) {
-            const link = event.target.closest('.pagination-link');
-            if (!link) return;
+    // Tri-state click logic
+    filterItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const type = this.dataset.type;
+            const id = this.dataset.id;
+            let state = this.dataset.state;
 
-            event.preventDefault();
+            if (state === 'neutral') state = 'included';
+            else if (state === 'included') state = 'excluded';
+            else state = 'neutral';
 
-            const url = new URL(link.href);
-            const page = url.searchParams.get('page');
+            updateItemVisuals(this, state);
 
-            if (page) {
-                // Update URL in browser without reloading
-                const currentUrl = new URL(window.location);
-                currentUrl.searchParams.set('page', page);
-                window.history.pushState({}, '', currentUrl);
+            if (state === 'neutral') delete activeFilters[type][id];
+            else activeFilters[type][id] = state;
 
-                // Fetch books for that page
-                fetchBooks(page);
-            }
+            fetchBooks(1);
         });
     });
+
+    function updateItemVisuals(element, state) {
+        element.dataset.state = state;
+        const icon = element.querySelector('.status-icon');
+        element.className = "admin-filter-item cursor-pointer p-2 rounded-lg flex items-center justify-between transition-colors";
+
+        icon.innerHTML = "";
+
+        if (state === 'included') {
+            element.classList.add('bg-green-50', 'border', 'border-green-200');
+            icon.innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        }
+        else if (state === 'excluded') {
+            element.classList.add('bg-red-50', 'border', 'border-red-200');
+            icon.innerHTML = `<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        }
+        else {
+            element.classList.add('hover:bg-gray-50');
+        }
+    }
+
+    // Fetch books
+    async function fetchBooks(page = 1) {
+        const searchQuery = searchInput.value;
+
+        const getIds = (type, state) =>
+            Object.keys(activeFilters[type]).filter(id => activeFilters[type][id] === state).join(',');
+
+        const params = new URLSearchParams({
+            search: searchQuery,
+            page,
+            genre_in: getIds('genre', 'included'),
+            genre_ex: getIds('genre', 'excluded'),
+            lang_in: getIds('language', 'included'),
+            lang_ex: getIds('language', 'excluded'),
+        });
+
+        updateLabels();
+
+        const response = await fetch(`{% url 'filter_books' %}?${params.toString()}`);
+        const data = await response.json();
+        bookGridContainer.innerHTML = data.books_html;
+    }
+
+    function updateLabels() {
+        const g = Object.keys(activeFilters.genre).length;
+        const l = Object.keys(activeFilters.language).length;
+
+        genreLabel.textContent = g > 0 ? `Genres (${g})` : 'All Genres';
+        langLabel.textContent = l > 0 ? `Languages (${l})` : 'All Languages';
+    }
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => fetchBooks(1), 300);
+    });
+});
 </script>
+
 {% endblock %}
