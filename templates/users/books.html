@@ -23,17 +23,6 @@
                         <p class="mt-2 text-red-600 font-semibold">Status: Overdue</p>
                         {% endif %}
                     </div>
-
-                    <button
-                        class="py-2 px-4 text-sm 
-                               {% if record.status == 'overdue' %}
-                                   bg-red-600 text-white hover:bg-red-700
-                               {% else %}
-                                   bg-gray-100 text-gray-700 hover:bg-gray-200
-                               {% endif %}
-                               font-medium rounded-lg transition duration-150 shadow-sm">
-                        Return
-                    </button>
                 </div>
                 {% endfor %}
             {% else %}

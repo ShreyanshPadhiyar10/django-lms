@@ -12,6 +12,7 @@ from django.core.cache import cache
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from datetime import date, timedelta
+from django.db.models import Count
 import pickle
 User = get_user_model()
 
@@ -23,10 +24,12 @@ def home(request):
 def admin_dashboard(request):
     total_books = Book.objects.count()
     total_users = User.objects.count()
+    pending_list = Request.objects.filter(status='pending').select_related('user', 'book')
 
     context = {
         'total_books': total_books,
         'total_users': total_users,
+        'pending_requests': pending_list,
     }
     return render(request, 'admin/dashboard.html', context)
 
@@ -108,8 +111,7 @@ def filter_books(request):
 
     # 1. Include Logic (OR logic within the same category, e.g., Fiction OR Sci-Fi)
     if genre_in:
-        for g_id in genre_in:
-            queryset = queryset.filter(genre__pk=g_id)
+        queryset = queryset.filter(genre__pk__in=genre_in)
     if lang_in:
         queryset = queryset.filter(language__pk__in=lang_in)
 
@@ -220,13 +222,89 @@ def admin_delete_book(request, book_id):
     book.delete()
     messages.success(request, f'"{book.title}" has been deleted successfully.')
     return redirect('admin_books')
+
 @staff_member_required
 def admin_issue_receive(request):
-    return render(request, 'admin/issue_receive.html')
+    active_issues = IssueRecord.objects.filter(status='issued').select_related('book', 'user').order_by('book__title')
+
+    context = {
+        # ... your existing context variables ...
+        'active_issues': active_issues, 
+    }
+    return render(request, 'admin/issue_receive.html', context)
+
+@staff_member_required
+def return_book_handler(request):
+    if request.method == "POST":
+        issue_id = request.POST.get('issue_id')
+        condition = request.POST.get('condition')
+        
+        # 1. Get the specific Issue Record directly
+        issue_record = get_object_or_404(IssueRecord, pk=issue_id)
+        
+        # 2. Update Status
+        issue_record.status = 'returned'
+        issue_record.return_date = date.today()
+        # You can save the condition somewhere if your model has a field for it
+        # issue_record.return_condition = condition 
+        
+        # 3. Calculate Fine (Simple Example)
+        if issue_record.return_date > issue_record.due_date:
+            delta = issue_record.return_date - issue_record.due_date
+            fine_amount = delta.days * 1.00
+        
+        issue_record.save()
+        
+        # 4. Update Book Availability
+        book = issue_record.book
+        book.available_copies += 1
+        book.save()
+        
+        messages.success(request, f"Book '{book.title}' returned successfully from {issue_record.user.username}.")
+        return redirect('admin_issue_receive')
+    
+@staff_member_required
+def issue_history(request):
+    # 1. Base Query
+    query = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
+    
+    records = IssueRecord.objects.select_related('user', 'book').all().order_by('-issue_date')
+
+    # 2. Search Logic (Student Name or Book Title)
+    if query:
+        records = records.filter(
+            Q(user__username__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(book__title__icontains=query) |
+            Q(book__isbn__icontains=query)
+        )
+
+    # 3. Status Filter (Issued, Returned, Overdue, etc.)
+    if status_filter:
+        records = records.filter(status=status_filter)
+
+    # 4. Pagination (Show 10 rows per page)
+    paginator = Paginator(records, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'records': page_obj,
+        'search_query': query,
+        'status_filter': status_filter
+    }
+    return render(request, 'admin/issue_history.html', context)
 
 @staff_member_required
 def admin_users(request):
-    users = User.objects.all().order_by('username')
+
+    users = User.objects.annotate(
+        active_issued_count=Count(
+            'issues', 
+            filter=Q(issues__status__in=['issued', 'overdue'])
+        )
+    ).order_by('username')
 
     context = {
         'users' : users,
@@ -255,20 +333,14 @@ def admin_settings(request):
 def user_dashboard(request):
     lru = LRUCache(request.session)
     
-    # Get the ordered list of IDs: e.g., [5, 12, 3]
     recent_ids = lru.get_ids()
     
-    # Fetch the actual Book objects from DB based on these IDs
-    # Note: SQL query might scramble order, so we preserve the LRU order manually in Python
     books_unsorted = Book.objects.filter(pk__in=recent_ids)
-    
-    # Sort the book objects to match the order of 'recent_ids'
-    # This is a Python-side sort to respect the DSA order
+
     recently_viewed = sorted(books_unsorted, key=lambda book: recent_ids.index(book.pk))
     pending_list = Request.objects.filter(status='pending').select_related('user', 'book')
 
     context = {
-        # ... your existing context ...
         'pending_list': pending_list,
         'recently_viewed': recently_viewed, 
     }

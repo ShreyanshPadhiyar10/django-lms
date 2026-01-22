@@ -124,6 +124,115 @@
         // Filter Items
         const filterItems = document.querySelectorAll('.filter-item');
 
+        if (bookGridContainer) {
+            console.log("yes");
+            bookGridContainer.addEventListener('click', function (event) {
+
+                // --- A. Pagination Logic ---
+                const paginationLink = event.target.closest('.pagination-link');
+                if (paginationLink) {
+                    event.preventDefault();
+                    const url = new URL(paginationLink.href);
+                    const page = url.searchParams.get('page');
+                    if (page) {
+                        fetchBooks(page);
+                        // Optional: Update browser URL
+                        const currentUrl = new URL(window.location);
+                        currentUrl.searchParams.set('page', page);
+                        window.history.pushState({}, '', currentUrl);
+                    }
+                    return; // Stop here so we don't trigger other logic
+                }
+
+                // --- B. Request Button Logic ---
+                const requestBtn = event.target.closest('.request-book-btn');
+                if (requestBtn) {
+                    event.preventDefault();
+
+                    // Get Data
+                    const bookId = requestBtn.dataset.bookId;
+                    const bookTitle = requestBtn.dataset.bookTitle;
+                    const bookAuthor = requestBtn.dataset.bookAuthor;
+
+                    // Show Modal
+                    modalTitle.textContent = bookTitle;
+                    modalAuthor.textContent = `by ${bookAuthor}`;
+                    modalConfirmBtn.dataset.bookId = bookId;
+
+                    modalMessage.textContent = '';
+                    modalMessage.className = 'hidden text-sm font-medium mb-4';
+                    modalConfirmBtn.disabled = false;
+                    modalConfirmBtn.textContent = 'Confirm Request';
+
+                    modal.style.display = 'flex';
+                }
+            });
+        }
+
+        // Hide modal on cancel
+        modalCancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Handle the "Confirm" click
+        modalConfirmBtn.addEventListener('click', async function () {
+            const bookId = this.dataset.bookId;
+            const originalText = this.textContent; // Save original text
+            
+            this.disabled = true;
+            this.textContent = 'Processing...';
+
+            try {
+                const response = await fetch(`/api/request-book/${bookId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. Show Success Message
+                    modalMessage.textContent = data.message;
+                    
+                    // Set color based on status
+                    if (data.status === 'waiting') {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-yellow-700';
+                    } else if (data.status === 'pending') {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-blue-700';
+                    } else {
+                        modalMessage.className = 'block text-sm font-medium mb-4 text-green-700';
+                    }
+
+                    // 2. WAIT 1.5 Seconds, THEN CLOSE & REFRESH
+                    setTimeout(() => {
+                        modal.style.display = 'none'; // Close the modal
+                        fetchBooks(1); // Refresh the grid to show updated status
+                        
+                        // Reset Modal State for next use
+                        modalConfirmBtn.disabled = false;
+                        modalConfirmBtn.textContent = 'Confirm Request';
+                        modalMessage.className = 'hidden text-sm font-medium mb-4';
+                    }, 1500);
+
+                } else {
+                    // Handle logical errors (like "Already requested")
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                // Show error message but keep modal open so user can read it
+                modalMessage.textContent = error.message || 'An unknown error occurred.';
+                modalMessage.className = 'block text-sm font-medium mb-4 text-red-700';
+                
+                // Re-enable button so they can try again or Cancel
+                this.disabled = false;
+                this.textContent = 'Confirm Request';
+            }
+        });
+
         // State Storage: { genre: {id: 'included'/'excluded'}, language: {...} }
         let activeFilters = { genre: {}, language: {} };
         let debounceTimeout;
@@ -252,91 +361,8 @@
         genreFilter.addEventListener('change', () => fetchBooks(1));
         languageFilter.addEventListener('change', () => fetchBooks(1));
 
-        bookGridContainer.addEventListener('click', function (event) {
-            const paginationLink = event.target.closest('.pagination-link');
-            if (paginationLink) {
-                event.preventDefault(); // Stop the page refresh
-                const url = new URL(paginationLink.href);
-                const page = url.searchParams.get('page');
-                if (page) {
-                    const currentUrl = new URL(window.location);
-                    currentUrl.searchParams.set('page', page);
-                    window.history.pushState({}, '', currentUrl);
 
-                    fetchBooks(page);
-                }
-            }
-            const requestBtn = event.target.closest('.request-book-btn');
-            console.log("requestBtn");
-            if (requestBtn) {
-                event.preventDefault();
 
-                // Get book details from data attributes
-                const bookId = requestBtn.dataset.bookId;
-                const bookTitle = requestBtn.dataset.bookTitle;
-                const bookAuthor = requestBtn.dataset.bookAuthor;
-
-                // Populate and show the modal
-                modalTitle.textContent = bookTitle;
-                modalAuthor.textContent = `by ${bookAuthor}`;
-                modalConfirmBtn.dataset.bookId = bookId;
-
-                // Reset modal state
-                modalMessage.textContent = '';
-                modalMessage.className = 'hidden text-sm font-medium mb-4';
-                modalConfirmBtn.disabled = false;
-                modalConfirmBtn.textContent = 'Confirm Request';
-
-                modal.style.display = 'flex';
-            }
-        });
-
-        // Hide modal on cancel
-        modalCancelBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Handle the "Confirm" click
-        modalConfirmBtn.addEventListener('click', async function () {
-            const bookId = this.dataset.bookId;
-            this.disabled = true;
-            this.textContent = 'Processing...';
-
-            try {
-                const response = await fetch(`/api/request-book/${bookId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Success (Issued or Waiting)
-                    modalMessage.textContent = data.message;
-                    modalMessage.className = data.status === 'waiting'
-                        ? 'block text-sm font-medium mb-4 text-yellow-700'
-                        : 'block text-sm font-medium mb-4 text-green-700';
-
-                    // If it was issued, update the copy count on the main page
-                    if (data.status === 'pending') {
-                        modalMessage.className = 'block text-sm font-medium mb-4 text-blue-700';
-                    } else {
-                        // This will handle the 'success' for 'issued' if you ever bring that back
-                        modalMessage.className = 'block text-sm font-medium mb-4 text-green-700';
-                    }
-                } else {
-                    // Error (e.g., already requested)
-                    throw new Error(data.message);
-                }
-
-            } catch (error) {
-                modalMessage.textContent = error.message || 'An unknown error occurred.';
-                modalMessage.className = 'block text-sm font-medium mb-4 text-red-700';
-            }
-        });
     });
 </script>
 {% endblock %}
